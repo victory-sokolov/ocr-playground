@@ -2,6 +2,7 @@ import os
 
 from flask import jsonify, render_template, request
 from flask.cli import FlaskGroup
+from werkzeug.utils import secure_filename
 
 from app import create_app, db
 
@@ -18,7 +19,9 @@ def upload_form():
 @app.route('/', methods=["POST"])
 def upload_image():
     file = request.files['file']
-    return jsonify({'status': 'Image recevied'}), 200
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    return jsonify({'status': 'Image saved'}), 200
 
 
 if __name__ == "__main__":
