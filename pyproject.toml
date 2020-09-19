@@ -8,6 +8,7 @@ authors = ["victory-sokolov <viktorsokolov.and@gmail.com>"]
 python = "^3.8"
 flask = "^1.1.2"
 flask-sqlalchemy = "^2.4.4"
+easyocr = "^1.1.9"
 
 [tool.poetry.dev-dependencies]
 
