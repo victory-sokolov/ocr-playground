@@ -1,28 +1,30 @@
 import os
 
-from flask import jsonify, render_template, request
-from flask.cli import FlaskGroup
-from werkzeug.utils import secure_filename
+from fastapi import FastAPI, File, Request, UploadFile
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 
-from app import create_app, db
+from detect_mrz import get_mrz
+from Recognition import Recogniser
+from utils.file import save_file
 
 config_name = os.getenv('FLASK_CONFIG', 'default')
-app = create_app(config_name)
-cli = FlaskGroup(create_app=create_app)
+app = FastAPI()
+
+templates = Jinja2Templates(directory="templates")
 
 
-@app.route('/')
-def upload_form():
-    return render_template('index.html')
+@app.get('/', response_class=HTMLResponse)
+def upload_form(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
-@app.route('/', methods=["POST"])
-def upload_image():
-    file = request.files['file']
-    filename = secure_filename(file.filename)
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    return jsonify({'status': 'Image saved'}), 200
+@app.post('/upload')
+def upload_image(file: UploadFile = File(...)):
+    save_file(file)
+    mrz = get_mrz(file.filename)
 
+    recogniser = Recogniser('eng', mrz)
+    data = recogniser.recognise()
 
-if __name__ == "__main__":
-    cli()
+    return {'data': data}, 200
