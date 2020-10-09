@@ -13,12 +13,14 @@ class Recogniser(object):
         self.image = image
 
     def recognise(self) -> str:
-        # img_cv = cv2.imread(r'example.jpg')
-        img_rgb = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
+        img_cv = cv2.imread(f'static/{self.image}')
+        img_rgb = cv2.cvtColor(img_cv, cv2.COLOR_BGR2RGB)
         blur = cv2.GaussianBlur(img_rgb, (5, 5), 0)
         thresh = cv2.threshold(blur, 127, 255, cv2.THRESH_BINARY)[1]
-        # cv2.imwrite("output.jpg", thresh)
-        result = pytesseract.image_to_osd(thresh, lang=self._lang)
+
+        cv2.imwrite("output.jpg", thresh)
+        config = (f"-l {self._lang} --oem 1 --psm 7")
+        result = pytesseract.image_to_string(thresh, config=config)
         print(result)
         return result
 
