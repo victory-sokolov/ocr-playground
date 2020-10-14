@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 import pytesseract
+from PIL import Image
+from tesserocr import OEM, PSM, PyTessBaseAPI
 
 # from redis import Redis
 # from rq import Queue
@@ -13,16 +15,25 @@ class Recogniser(object):
         self.image = image
 
     def recognise(self) -> str:
-        img_cv = cv2.imread(f'static/{self.image}')
-        img_rgb = cv2.cvtColor(img_cv, cv2.COLOR_BGR2RGB)
-        blur = cv2.GaussianBlur(img_rgb, (5, 5), 0)
-        thresh = cv2.threshold(blur, 127, 255, cv2.THRESH_BINARY)[1]
+        kernel = np.ones((2, 2), dtype=np.uint8)
+
+        img = cv2.imread(f'static/{self.image}')
+        img = cv2.resize(img, None, fx=1.2, fy=1.2,
+                         interpolation=cv2.INTER_CUBIC)
+        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        # median = cv2.medianBlur(img_gray, 3)
+        thresh = cv2.threshold(
+            img_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
         cv2.imwrite("output.jpg", thresh)
-        config = (f"-l {self._lang} --oem 1 --psm 7")
-        result = pytesseract.image_to_string(thresh, config=config)
-        print(result)
-        return result
+        pl_img = Image.fromarray(thresh)
+
+        with PyTessBaseAPI(lang="lav+eng+ocrb", oem=OEM.LSTM_ONLY) as api:
+            api.SetImage(pl_img)
+            response = api.GetUTF8Text()
+
+        return response
 
     # def recognision_queue(self, image):
     #     image_process = ImageProcessing(image)
