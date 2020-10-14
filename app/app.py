@@ -1,3 +1,4 @@
+import json
 import shutil
 from os import getcwd, listdir
 from os.path import isfile, join
@@ -33,14 +34,17 @@ def upload_image(file: UploadFile = File(...)):
             shutil.unpack_archive(f'{getcwd()}/static/{f}', folder)
             files = [f for f in listdir(folder) if isfile(join(folder, f))]
 
-            mrz = get_mrz(files)
             # recogniser = Recogniser('eng', mrz)
             # data = recogniser.recognise()
             return {'Status': 'Ok'}, 200
 
-        mrz = get_mrz(f)
-        recogniser = Recogniser('eng', mrz)
+        recogniser = Recogniser('eng', f)
         data = recogniser.recognise()
+
+        data = " ".join(data.split())
+        data = data.split('\n')
+        data = list(filter(None, data))
+        print(data)
         return {'data': data}, 200
 
     return {'Status': 'File not allowed'}
