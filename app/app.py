@@ -26,25 +26,37 @@ def upload_form(request: Request):
 @app.post('/upload')
 def upload_image(file: UploadFile = File(...)):
     f = file.filename
+    recogniser = Recogniser()
 
     if f.endswith(tuple(config_name.ALLOWED_IMAGE_EXTENSIONS)):
         save_file(file)
         if is_archive_file(f):
-            folder = f"static/{f.split('.')[0]}"
-            shutil.unpack_archive(f'{getcwd()}/static/{f}', folder)
-            files = [f for f in listdir(folder) if isfile(join(folder, f))]
+            folder = f"{f.split('.')[0]}/"
+            # file path where to extract archive images
+            file_path = f'static/{folder}'
+            shutil.unpack_archive(f'{getcwd()}/static/{f}', file_path)
+            files = [
+                folder + f
+                for f in listdir(file_path)
+                if isfile(join(file_path, f))
+            ]
+            result = recogniser.recognise(files)
+            data = clean(result)
+            return {'Data': data}, 200
 
-            # recogniser = Recogniser('eng', mrz)
-            # data = recogniser.recognise()
-            return {'Status': 'Ok'}, 200
-
-        recogniser = Recogniser('eng', f)
-        data = recogniser.recognise()
-
-        data = " ".join(data.split())
-        data = data.split('\n')
-        data = list(filter(None, data))
+        result = recogniser.recognise(f)
+        data = clean(result)
         print(data)
         return {'data': data}, 200
 
     return {'Status': 'File not allowed'}
+
+
+def clean(txt_data: list):
+    result_data = []
+    for txt in txt_data:
+        data = " ".join(txt).split('\n')
+        data = [ele for ele in data if ele.strip()]
+        result_data.append(data)
+
+    return list(filter(None, result_data))
