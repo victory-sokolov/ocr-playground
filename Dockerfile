@@ -9,7 +9,8 @@ ENV LC_ALL=C \
     POETRY_VIRTUALENVS_CREATE=false \
     POETRY_NO_INTERACTION=1 \
     POETRY_VERSION=1.0.10 \
-    PYSETUP_PATH="/home/pysetup"
+    PYSETUP_PATH="/home/pysetup" \
+    TESSDATA_PREFIX="/usr/share/tesseract-ocr/4.00/tessdata"
 
 ENV PATH="$POETRY_HOME/bin:$PATH"
 
@@ -38,6 +39,9 @@ RUN poetry install --no-dev --no-ansi
 WORKDIR /app
 
 COPY app/ .
+
+# Move traineddata files to $TESSDATA
+COPY app/traineddata/ $TESSDATA_PREFIX
 
 EXPOSE 8000
 CMD ["uvicorn", "--reload", "--host=0.0.0.0", "--port=8000", "app:app"]
