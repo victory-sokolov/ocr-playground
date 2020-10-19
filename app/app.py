@@ -12,6 +12,7 @@ from config import config
 from detect_mrz import get_mrz
 from Recognition import Recogniser
 from utils.file import is_archive_file, save_file
+from utils.helpers import clean
 
 config_name = config['development']
 app = FastAPI()
@@ -56,15 +57,6 @@ def upload_image(file: UploadFile = File(...)):
         result = recogniser.recognise(f)
         data = clean(result)
 
-        return {'data': data}, 200
+        return data, 200
 
     return {'Status': 'File not allowed'}
-
-
-def clean(txt_data):
-    result_data = txt_data
-    for index, txt in enumerate(txt_data):
-        data = " ".join(txt['ocr'].split())
-        result_data[index]['ocr'] = data
-
-    return result_data
