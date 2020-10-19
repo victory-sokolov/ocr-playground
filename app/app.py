@@ -5,6 +5,7 @@ from os.path import isfile, join
 
 from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from config import config
@@ -14,6 +15,7 @@ from utils.file import is_archive_file, save_file
 
 config_name = config['development']
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
@@ -21,6 +23,12 @@ templates = Jinja2Templates(directory="templates")
 @app.get('/', response_class=HTMLResponse)
 def upload_form(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+
+@app.get('/result', response_class=HTMLResponse)
+def ocr_result(request: Request):
+    nums = {"image": "static/IDCardDataSet/document_1.jpg"}
+    return templates.TemplateResponse("result.html", {"request": request, "results": nums})
 
 
 @app.post('/upload')
@@ -40,23 +48,23 @@ def upload_image(file: UploadFile = File(...)):
                 for f in listdir(file_path)
                 if isfile(join(file_path, f))
             ]
-            result = recogniser.recognise(files)
-            data = clean(result)
-            return {'Data': data}, 200
+
+            ocr = recogniser.recognise(files)
+            ocr = clean(ocr)
+            return ocr
 
         result = recogniser.recognise(f)
         data = clean(result)
-        print(data)
+
         return {'data': data}, 200
 
     return {'Status': 'File not allowed'}
 
 
-def clean(txt_data: list):
-    result_data = []
-    for txt in txt_data:
-        data = " ".join(txt).split('\n')
-        data = [ele for ele in data if ele.strip()]
-        result_data.append(data)
+def clean(txt_data):
+    result_data = txt_data
+    for index, txt in enumerate(txt_data):
+        data = " ".join(txt['ocr'].split())
+        result_data[index]['ocr'] = data
 
-    return list(filter(None, result_data))
+    return result_data
