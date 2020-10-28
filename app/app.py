@@ -26,14 +26,14 @@ def upload_form(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
-@app.get('/result', response_class=HTMLResponse)
+@app.get('/ocr-results', response_class=HTMLResponse)
 def ocr_result(request: Request):
     nums = {"image": "static/IDCardDataSet/document_1.jpg"}
     return templates.TemplateResponse("result.html", {"request": request, "results": nums})
 
 
-@app.post('/upload')
-def upload_image(file: UploadFile = File(...)):
+@app.post('/upload', response_class=HTMLResponse)
+def upload_image(request: Request, file: UploadFile = File(...)):
     f = file.filename
     recogniser = Recogniser()
 
@@ -52,11 +52,10 @@ def upload_image(file: UploadFile = File(...)):
 
             ocr = recogniser.recognise(files)
             ocr = clean(ocr)
-            return ocr
+            return templates.TemplateResponse("result.html", {"request": request, "data": ocr})
 
-        result = recogniser.recognise(f)
-        data = clean(result)
-
-        return data, 200
+        ocr = recogniser.recognise(f)
+        ocr = clean(ocr)
+        return templates.TemplateResponse("result.html", {"request": request, "data": ocr})
 
     return {'Status': 'File not allowed'}
