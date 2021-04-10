@@ -1,7 +1,8 @@
 import os
+
 from dotenv import load_dotenv
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
 
@@ -19,6 +20,7 @@ class BaseConfig:
     TOKEN_EXPIRATION_SECONDS = 0
     UPLOAD_FOLDER = os.path.abspath(os.curdir) + os.getenv('UPLOAD_FOLDER')
     ALLOWED_IMAGE_EXTENSIONS = os.getenv('ALLOWED_IMAGE_EXTENSIONS')
+    OCR_ENGINE = os.getenv('OCR_ENGINE')
 
     @staticmethod
     def init_app(app):
