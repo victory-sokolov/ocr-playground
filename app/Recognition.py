@@ -10,14 +10,20 @@ from redis import Redis
 from rq import Queue
 from tesserocr import OEM, PSM, PyTessBaseAPI
 
+from config import config
 from transform import four_point_transform
 
-os.environ["load_system_dawg"] = "0"
-os.environ["load_freq_dawg"] = "0"
-os.environ["load_punc_dawg"] = "0"
+config_name = config['development']
+class Recognizer:
 
+    def recognize_text(self, image):
 
-class Recogniser:
+        if config_name.OCR_ENGINE == 'Tesseract':
+            with PyTessBaseAPI(lang="lav+eng+ocrb", oem=OEM.LSTM_ONLY) as api:
+                api.SetImage(image)
+                response = api.GetUTF8Text()
+                return response
+
 
     def recognise(self, files):
         recognised_data = []
@@ -31,28 +37,26 @@ class Recogniser:
             if img is None:
                 raise FileExistsError("Image not found")
 
-            img_cut = self.image_contours(img)
+            # img_cut = self.image_contours(img)
 
             img = cv2.resize(img, None, fx=1.2, fy=1.2,
                              interpolation=cv2.INTER_CUBIC)
             img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
             thresh = cv2.threshold(
-                img_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-
+                img_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
+            )[1]
 
             img_name = f"{uuid.uuid1()}.jpg"
-            cv2.imwrite(f"static/{img_name}", img_cut)
+            cv2.imwrite(f"static/{img_name}", img)
 
-            result = Image.fromarray(thresh)
+            result_image = Image.fromarray(thresh)
 
-            with PyTessBaseAPI(lang="lav+eng+ocrb", oem=OEM.LSTM_ONLY) as api:
-                api.SetImage(result)
-                response = api.GetUTF8Text()
-                recognised_data.append({
-                    'image': img_name,
-                    'ocr': response
-                })
+            recognition_result = self.recognize_text(result_image)
+            recognised_data.append({
+                'image': img_name,
+                'ocr': recognition_result
+            })
 
         return recognised_data
 
@@ -91,5 +95,4 @@ class Recogniser:
         q.empty()
         job = q.enqueue(self.recognise, args=([images]))
 
-        time.sleep(260)
         print(job.result)
