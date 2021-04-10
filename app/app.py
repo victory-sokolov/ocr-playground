@@ -10,7 +10,7 @@ from fastapi.templating import Jinja2Templates
 
 from config import config
 from detect_mrz import get_mrz
-from Recognition import Recogniser
+from Recognition import Recognizer
 from utils.file import is_archive_file, save_file
 from utils.helpers import clean
 
@@ -35,7 +35,7 @@ def ocr_result(request: Request):
 @app.post('/upload', response_class=HTMLResponse)
 def upload_image(request: Request, file: UploadFile = File(...)):
     f = file.filename
-    recogniser = Recogniser()
+    recognizer = Recognizer()
 
     if f.endswith(tuple(config_name.ALLOWED_IMAGE_EXTENSIONS)):
         save_file(file)
@@ -50,11 +50,11 @@ def upload_image(request: Request, file: UploadFile = File(...)):
                 if isfile(join(file_path, f))
             ]
 
-            ocr = recogniser.recognise(files)
+            ocr = recognizer.recognise(files)
             ocr = clean(ocr)
             return templates.TemplateResponse("result.html", {"request": request, "data": ocr})
 
-        ocr = recogniser.recognise(f)
+        ocr = recognizer.recognise(f)
         ocr = clean(ocr)
         return templates.TemplateResponse("result.html", {"request": request, "data": ocr})
 
