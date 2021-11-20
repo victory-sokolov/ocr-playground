@@ -118,7 +118,6 @@ class ImageProcessing:
         )
 
 
-img = "1011-receipt.jpg"
-
-processing = ImageProcessing(img)
-processing.run_pipeline()
+# img = "1011-receipt.jpg"
+# processing = ImageProcessing(img)
+# processing.run_pipeline()
