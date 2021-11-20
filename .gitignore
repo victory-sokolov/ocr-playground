@@ -129,6 +129,6 @@ dmypy.json
 .pyre/
 
 # Custom
-app/static/*.jpg
-app/static/*.png
+app/static/processed
+app/static/docs
 app/static/*.zip

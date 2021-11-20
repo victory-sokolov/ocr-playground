@@ -7,6 +7,9 @@ Experimenting with following libs
 3. [EasyOCR](https://github.com/JaidedAI/EasyOCR)
 4. [Tesserocr](https://github.com/sirfz/tesserocr)
 
+
+## Start project
+
 ## Run inside Docker
 
 ```bash
