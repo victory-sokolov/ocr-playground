@@ -8,6 +8,10 @@ Comparing few OCR libraries
 Image preprocessing is being done using OpenCV
 ## Start project
 
+```shell
+cd app && ./start.sh
+```
+
 ## Run inside Docker
 
 ```bash
