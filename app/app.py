@@ -1,4 +1,3 @@
-import json
 import shutil
 from os import getcwd, listdir
 from os.path import isfile, join
@@ -9,19 +8,15 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from config import config
-from processor import Processor
 from utils.file import is_archive_file, save_file
 from utils.helpers import clean
-from tokenization import to_named_entities
-from recognizers import Tesseract, EasyOcr, Paddle
+from containers import RecognitionContainer
 
 config_name = config['development']
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
-# Define recognizer to use Tesseract, EasyOcr, Paddle
-recognizer = Tesseract()
 
 @app.get('/', response_class=HTMLResponse)
 def upload_form(request: Request):
@@ -37,7 +32,7 @@ def ocr_result(request: Request):
 @app.post('/upload', response_class=HTMLResponse)
 def upload_image(request: Request, file: UploadFile = File(...)):
     f = file.filename
-    processor = Processor(recognizer=recognizer)
+    processor = RecognitionContainer.processor()
 
     if f.endswith(tuple(config_name.ALLOWED_IMAGE_EXTENSIONS)):
         save_file(file)

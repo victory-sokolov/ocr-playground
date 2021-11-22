@@ -2,14 +2,12 @@ import cv2
 import imutils
 import os
 from uuid import uuid1
-from PIL import Image
 from redis import Redis
 from rq import Queue
 
 from config import config
 from transform import four_point_transform
-
-from recognizers import Tesseract, Recognizer
+from recognizers import Recognizer
 
 config_name = config['development']
 class Processor:
@@ -48,8 +46,6 @@ class Processor:
             processed_img = f"static/temp-{str(uuid1)}.jpg"
             cv2.imwrite(processed_img, thresh)
 
-            # result_image = Image.fromarray(thresh)
-            # print(type(result_image))
             recognition_result = self.recognizer.recognize(processed_img)
             recognised_data.append({
                 'image': img_name,

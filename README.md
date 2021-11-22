@@ -1,13 +1,11 @@
 # OCR Playground
 
-Experimenting with following libs
+Comparing few OCR libraries
+1. [Tesseract](https://github.com/sirfz/tesserocr)
+2. [EasyOCR](https://github.com/JaidedAI/EasyOCR)
+3. [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)
 
-1. OpenCV
-2. [Tesseract](https://github.com/tesseract-ocr/tesseract)
-3. [EasyOCR](https://github.com/JaidedAI/EasyOCR)
-4. [Tesserocr](https://github.com/sirfz/tesserocr)
-
-
+Image preprocessing is being done using OpenCV
 ## Start project
 
 ## Run inside Docker
