@@ -1,14 +1,11 @@
 import os
 from functools import reduce
-from time import sleep
-
 import cv2
 import numpy as np
 from wand.image import Image as WandImage
 
 
 class ImageProcessing:
-
     def __init__(self, image):
         self.image_path = image
         self.image_name = image
@@ -48,7 +45,7 @@ class ImageProcessing:
     def adaptive_thresh(self, image):
         return cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 121, 12)
 
-    def save_image(self, image):
+    def save_image(self, image) -> None:
         cv2.imwrite(f'{os.getcwd()}/static/output.png', image)
 
     def deskew(self, image):
@@ -117,7 +114,3 @@ class ImageProcessing:
             self.image
         )
 
-
-# img = "1011-receipt.jpg"
-# processing = ImageProcessing(img)
-# processing.run_pipeline()

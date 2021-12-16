@@ -10,6 +10,7 @@ from transform import four_point_transform
 from recognizers import Recognizer
 
 config_name = config['development']
+
 class Processor:
 
     def __init__(self, recognizer: Recognizer) -> None:
