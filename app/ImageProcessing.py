@@ -3,7 +3,7 @@ from functools import reduce
 import cv2
 import numpy as np
 from wand.image import Image as WandImage
-
+from numba import jit
 
 class ImageProcessing:
     def __init__(self, image):
@@ -96,6 +96,7 @@ class ImageProcessing:
         dst = cv2.warpPerspective(image, op, (800, 800))
         return dst
 
+    @jit(nopython=True)
     def run_pipeline(self):
         rotated_image = self.rotate(self.image)
         cv2.imwrite(
