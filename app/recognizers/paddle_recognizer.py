@@ -1,5 +1,7 @@
 from paddleocr import PaddleOCR
+
 from .recognizer import Recognizer
+
 
 class Paddle(Recognizer):
 

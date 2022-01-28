@@ -1,5 +1,7 @@
-from .recognizer import Recognizer
 import easyocr
+
+from .recognizer import Recognizer
+
 
 class EasyOcr(Recognizer):
 

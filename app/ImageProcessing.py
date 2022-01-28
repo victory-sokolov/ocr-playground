@@ -1,9 +1,11 @@
 import os
 from functools import reduce
+
 import cv2
 import numpy as np
-from wand.image import Image as WandImage
 from numba import jit
+from wand.image import Image as WandImage
+
 
 class ImageProcessing:
     def __init__(self, image):

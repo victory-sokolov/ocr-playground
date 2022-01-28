@@ -8,9 +8,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from config import config
+from containers import RecognitionContainer
 from utils.file import is_archive_file, save_file
 from utils.helpers import clean
-from containers import RecognitionContainer
 
 config_name = config['development']
 app = FastAPI()
