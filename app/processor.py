@@ -3,11 +3,10 @@ from uuid import uuid1
 
 import cv2
 import imutils
-from redis import Redis
-from rq import Queue
-
 from config import config
 from recognizers import Recognizer
+from redis import Redis
+from rq import Queue
 from transform import four_point_transform
 
 config_name = config["development"]

@@ -2,13 +2,12 @@ import shutil
 from os import getcwd, listdir
 from os.path import isfile, join
 
+from config import config
+from containers import RecognitionContainer
 from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-
-from config import config
-from containers import RecognitionContainer
 from utils.file import is_archive_file, save_file
 from utils.helpers import clean
 
@@ -37,7 +36,7 @@ def upload_image(request: Request, file: UploadFile = File(...)):
     f = file.filename
     processor = RecognitionContainer.processor()
 
-    if f.endswith(tuple(config_name.ALLOWED_IMAGE_EXTENSIONS)):
+    if f.endswith(list(config_name.ALLOWED_IMAGE_EXTENSIONS)):
         save_file(file)
         if is_archive_file(f):
             folder = f"{f.split('.')[0]}/"

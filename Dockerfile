@@ -30,7 +30,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     tesseract-ocr-eng \
     tesseract-ocr-lav
 
-RUN set -o pipefail && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 
 COPY poetry.lock pyproject.toml ../
 RUN poetry install --no-dev --no-ansi

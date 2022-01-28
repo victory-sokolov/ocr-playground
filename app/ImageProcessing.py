@@ -14,7 +14,7 @@ class ImageProcessing:
         self.image_name = image
         self.image = cv2.imread(f"static/{image}")
 
-    def change_image_DPI(self, image):containers
+    def change_image_DPI(self, image):
         params = ["mogrify", "-set", "density", "300", image]
         Popen(params, stdout=PIPE, stderr=STDOUT, text=True)
 
