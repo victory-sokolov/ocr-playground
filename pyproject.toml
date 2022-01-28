@@ -15,7 +15,6 @@ numpy = "^1.19.2"
 imutils = "^0.5.3"
 tesserocr = "^2.5.1"
 python-dotenv = "^0.14.0"
-pillow = "^8.0.0"
 rq = "^1.5.2"
 redis = "^3.5.3"
 aiofiles = "^0.5.0"
@@ -25,9 +24,11 @@ paddleocr = "^2.3.0"
 paddlepaddle = "^2.2.0"
 dependency-injector = "^4.37.0"
 numba = "^0.54.1"
+Pillow = "8.2.0"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"
+isort = "^5.10.1"
 
 [build-system]
 requires = ["poetry>=0.12"]
