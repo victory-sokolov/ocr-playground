@@ -8,7 +8,6 @@ def get_mrz(images):
     rectKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (13, 5))
     sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (21, 21))
     regions = []
-    print(images)
     if isinstance(images, str):
         images = list(images)
 
@@ -49,7 +48,7 @@ def get_mrz(images):
         # right borders to zero
         p = int(image.shape[1] * 0.05)
         thresh[:, 0:p] = 0
-        thresh[:, image.shape[1] - p :] = 0
+        thresh[:, image.shape[1] - p, :] = 0
 
         # find contours in the thresholded image and sort them by their
         # size

@@ -36,7 +36,7 @@ def upload_image(request: Request, file: UploadFile = File(...)):
     f = file.filename
     processor = RecognitionContainer.processor()
 
-    if f.endswith(list(config_name.ALLOWED_IMAGE_EXTENSIONS)):
+    if f.endswith(tuple(config_name.ALLOWED_IMAGE_EXTENSIONS)):
         save_file(file)
         if is_archive_file(f):
             folder = f"{f.split('.')[0]}/"
