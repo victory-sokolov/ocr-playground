@@ -1,12 +1,9 @@
 import os
+from typing import List
 
 from dotenv import load_dotenv
 
-dotenv_path = os.path.join(os.path.dirname(__file__), "..", ".env")
-if os.path.exists(dotenv_path):
-    load_dotenv(dotenv_path)
-
-basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv()
 
 
 class BaseConfig:
@@ -21,7 +18,15 @@ class BaseConfig:
     TOKEN_EXPIRATION_DAYS = 30
     TOKEN_EXPIRATION_SECONDS = 0
     UPLOAD_FOLDER = os.path.abspath(os.curdir) + os.getenv("UPLOAD_FOLDER", "static")
-    ALLOWED_IMAGE_EXTENSIONS = os.getenv("ALLOWED_IMAGE_EXTENSIONS", ["jpg", "png"])
+    ALLOWED_IMAGE_EXTENSIONS: List[str] = [
+        "png",
+        "jpg",
+        "jpeg",
+        "gztar",
+        "tar",
+        "xztar",
+        "zip",
+    ]
     OCR_ENGINE = os.getenv("OCR_ENGINE")
 
     @staticmethod
