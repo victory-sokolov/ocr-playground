@@ -1,6 +1,7 @@
 import shutil
 from os import getcwd, listdir
 from os.path import isfile, join
+from typing import Tuple
 
 from config import config
 from containers import RecognitionContainer
@@ -35,8 +36,8 @@ def ocr_result(request: Request):
 def upload_image(request: Request, file: UploadFile = File(...)):
     f = file.filename
     processor = RecognitionContainer.processor()
-
-    if f.endswith(tuple(config_name.ALLOWED_IMAGE_EXTENSIONS)):
+    allowed: Tuple[str] = tuple(config_name.ALLOWED_IMAGE_EXTENSIONS)
+    if f.endswith(allowed):
         save_file(file)
         if is_archive_file(f):
             folder = f"{f.split('.')[0]}/"
