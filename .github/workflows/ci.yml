@@ -14,13 +14,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: hadolint
-        uses: hadolint/hadolint-action@v1.6.0
-        with:
-          ignore: DL3008
-
       - name: Run Super-Linter
         uses: github/super-linter@v4.8.7
         env:
+          DOCKERFILE_HADOLINT_FILE_NAME: .hadolint.yaml
+          
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

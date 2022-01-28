@@ -1,5 +1,7 @@
 # OCR Playground
 
+[![GitHub Super-Linter](https://github.com/victory-sokolov/ocr-playground/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+
 Comparing few OCR libraries
 1. [Tesseract](https://github.com/sirfz/tesserocr)
 2. [EasyOCR](https://github.com/JaidedAI/EasyOCR)

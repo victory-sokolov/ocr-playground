@@ -78,7 +78,8 @@ def get_mrz(images):
 
                 # extract the ROI from the image and draw a bounding box
                 # surrounding the MRZ
-                roi = image[y : y + h, x : x + w].copy()  # pylint: disable=E203
+                # pylint: disable=E203
+                roi = image[y : y + h, x : x + w].copy()
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 break
 
