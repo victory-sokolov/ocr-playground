@@ -28,7 +28,9 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     curl \
     tesseract-ocr \
     tesseract-ocr-eng \
-    tesseract-ocr-lav
+    tesseract-ocr-lav \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
