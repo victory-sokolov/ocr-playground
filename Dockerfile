@@ -1,4 +1,4 @@
-FROM python:3.7.7-slim
+FROM python:3.8-slim
 
 ENV LC_ALL=C \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -28,9 +28,11 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     curl \
     tesseract-ocr \
     tesseract-ocr-eng \
-    tesseract-ocr-lav
+    tesseract-ocr-lav \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 
 COPY poetry.lock pyproject.toml ../

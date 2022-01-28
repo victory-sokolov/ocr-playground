@@ -3,8 +3,8 @@ from tesserocr import OEM, PyTessBaseAPI
 
 from .recognizer import Recognizer
 
-class Tesseract(Recognizer):
 
+class Tesseract(Recognizer):
     def __init__(self) -> None:
         pass
 

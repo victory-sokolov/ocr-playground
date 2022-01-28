@@ -1,10 +1,11 @@
 from paddleocr import PaddleOCR
+
 from .recognizer import Recognizer
 
-class Paddle(Recognizer):
 
+class Paddle(Recognizer):
     def __init__(self) -> None:
-        self.ocr_model = PaddleOCR(lang='en')
+        self.ocr_model = PaddleOCR(lang="en")
 
     def recognize(self, image_path: str):
         data = []
@@ -13,4 +14,3 @@ class Paddle(Recognizer):
             data.append(line[1][0])
 
         return result
-

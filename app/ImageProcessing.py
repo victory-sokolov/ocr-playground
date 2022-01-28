@@ -1,20 +1,22 @@
 import os
 from functools import reduce
+from subprocess import PIPE, STDOUT, Popen
+
 import cv2
 import numpy as np
-from wand.image import Image as WandImage
 from numba import jit
+from wand.image import Image as WandImage
+
 
 class ImageProcessing:
     def __init__(self, image):
         self.image_path = image
         self.image_name = image
-        self.image = cv2.imread(f'static/{image}')
+        self.image = cv2.imread(f"static/{image}")
 
     def change_image_DPI(self, image):
-        process_params = [
-            "mogrify", "-set", "density", "300", image
-        ]
+        params = ["mogrify", "-set", "density", "300", image]
+        Popen(params, stdout=PIPE, stderr=STDOUT, text=True)
 
     def rotate(self, image):
         angle = 90
@@ -22,8 +24,7 @@ class ImageProcessing:
         if h < w:
             with WandImage(filename=self.image_path) as img:
                 img.rotate(angle)
-                img_buffer = np.asarray(
-                    bytearray(img.make_blob()), dtype=np.uint8)
+                img_buffer = np.asarray(bytearray(img.make_blob()), dtype=np.uint8)
 
             if img_buffer is not None:
                 retval = cv2.imdecode(img_buffer, cv2.IMREAD_UNCHANGED)
@@ -38,15 +39,15 @@ class ImageProcessing:
         return cv2.GaussianBlur(image, (5, 5), 0)
 
     def thresh(self, image):
-        return cv2.threshold(
-            image, 127, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
-        )[1]
+        return cv2.threshold(image, 127, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
     def adaptive_thresh(self, image):
-        return cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 121, 12)
+        return cv2.adaptiveThreshold(
+            image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 121, 12
+        )
 
     def save_image(self, image) -> None:
-        cv2.imwrite(f'{os.getcwd()}/static/output.png', image)
+        cv2.imwrite(f"{os.getcwd()}/static/output.png", image)
 
     def deskew(self, image):
         coords = np.column_stack(np.where(image > 0))
@@ -59,7 +60,8 @@ class ImageProcessing:
         center = (w // 2, h // 2)
         M = cv2.getRotationMatrix2D(center, angle, 1.0)
         rotated = cv2.warpAffine(
-            image, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
+            image, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE
+        )
         return rotated
 
     def dilate(self, image):
@@ -73,7 +75,7 @@ class ImageProcessing:
         return cv2.erode(image, kernel, iterations=1)
 
     def cut_image(self, image):
-        """ Cut edges of receipt image"""
+        """Cut edges of receipt image"""
         image_resized = cv2.resize(image, (800, 800))
         blurred = cv2.GaussianBlur(image_resized, (5, 5), 0)
         edge = cv2.Canny(blurred, 70, 200)
@@ -83,10 +85,10 @@ class ImageProcessing:
         contours = sorted(contours, key=cv2.contourArea, reverse=True)
         for contour in contours:
             sq = cv2.arcLength(contour, True)
-            approx = cv2.approxPolyDP(contour, 0.02*sq, True)
+            approx = cv2.approxPolyDP(contour, 0.02 * sq, True)
 
             if len(approx) == 4:
-                target = approx
+                # target = approx
                 break
 
         # approx = mapper.mapp(target)  # find endpoints of the sheet
@@ -99,19 +101,17 @@ class ImageProcessing:
     @jit(nopython=True, parallel=True)
     def run_pipeline(self):
         rotated_image = self.rotate(self.image)
-        cv2.imwrite(
-            f'{os.getcwd()}/static/{self.image_name}', rotated_image
-        )
+        cv2.imwrite(f"{os.getcwd()}/static/{self.image_name}", rotated_image)
         self.image = rotated_image
 
         return reduce(
-            lambda image, function: function(image), (
+            lambda image, function: function(image),
+            (
                 self.gray_scale,
                 self.thresh,
                 self.noise_removal,
                 self.erode,
-                self.save_image
+                self.save_image,
             ),
-            self.image
+            self.image,
         )
-

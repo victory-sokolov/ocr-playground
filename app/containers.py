@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 from processor import Processor
-from recognizers import Tesseract, Paddle, EasyOcr
+from recognizers import EasyOcr, Paddle, Tesseract
 
 
 class Recognizers(containers.DeclarativeContainer):
