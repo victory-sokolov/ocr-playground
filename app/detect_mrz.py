@@ -36,8 +36,7 @@ def get_mrz(images):
         # apply a closing operation using the rectangular kernel to close
         # gaps in between letters -- then apply Otsu's thresholding method
         gradX = cv2.morphologyEx(gradX, cv2.MORPH_CLOSE, rectKernel)
-        thresh = cv2.threshold(
-            gradX, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+        thresh = cv2.threshold(gradX, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
 
         # perform another closing operation, this time using the square
         # kernel to close gaps between lines of the MRZ, then perform a
@@ -50,12 +49,13 @@ def get_mrz(images):
         # right borders to zero
         p = int(image.shape[1] * 0.05)
         thresh[:, 0:p] = 0
-        thresh[:, image.shape[1] - p:] = 0
+        thresh[:, image.shape[1] - p :] = 0
 
         # find contours in the thresholded image and sort them by their
         # size
-        cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
-                                cv2.CHAIN_APPROX_SIMPLE)
+        cnts = cv2.findContours(
+            thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+        )
         cnts = imutils.grab_contours(cnts)
         cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
         roi = image
@@ -79,7 +79,7 @@ def get_mrz(images):
 
                 # extract the ROI from the image and draw a bounding box
                 # surrounding the MRZ
-                roi = image[y:y + h, x:x + w].copy()
+                roi = image[y : y + h, x : x + w].copy()
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 break
 

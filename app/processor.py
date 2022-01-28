@@ -10,10 +10,10 @@ from config import config
 from recognizers import Recognizer
 from transform import four_point_transform
 
-config_name = config['development']
+config_name = config["development"]
+
 
 class Processor:
-
     def __init__(self, recognizer: Recognizer) -> None:
         self.recognizer = recognizer
 
@@ -31,8 +31,7 @@ class Processor:
 
             # img_cut = self.image_contours(img)
 
-            img = cv2.resize(img, None, fx=1.2, fy=1.2,
-                             interpolation=cv2.INTER_CUBIC)
+            img = cv2.resize(img, None, fx=1.2, fy=1.2, interpolation=cv2.INTER_CUBIC)
             img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
             thresh = cv2.threshold(
@@ -49,10 +48,7 @@ class Processor:
             cv2.imwrite(processed_img, thresh)
 
             recognition_result = self.recognizer.recognize(processed_img)
-            recognised_data.append({
-                'image': img_name,
-                'text': recognition_result
-            })
+            recognised_data.append({"image": img_name, "text": recognition_result})
 
             # remove temp image
             # ToDo: Refactor use Context manager
@@ -71,8 +67,7 @@ class Processor:
 
         # find the contours in the edged image, keeping only the
         # largest ones, and initialize the screen contour
-        cnts = cv2.findContours(
-            edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         cnts = imutils.grab_contours(cnts)
         cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:5]
 
