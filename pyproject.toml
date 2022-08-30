@@ -6,28 +6,30 @@ authors = ["victory-sokolov <viktorsokolov.and@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.10"
-fastapi = "^0.65.2"
-uvicorn = "^0.12.1"
+fastapi = "^0.81.0"
+uvicorn = "^0.18.3"
 opencv-python = "4.2.0.32"
-jinja2 = "^2.11.2"
 python-multipart = "^0.0.5"
 numpy = "^1.19.2"
 imutils = "^0.5.3"
 python-dotenv = "^0.14.0"
 rq = "^1.5.2"
-redis = "^3.5.3"
-aiofiles = "^0.5.0"
-easyocr = "1.4.1"
+redis = "^4.3.4"
+aiofiles = "^0.8.0"
+easyocr = "^1.6.0"
 spacy = "^3.2.0"
-paddleocr = "^2.3.0"
-paddlepaddle = "^2.2.0"
+paddleocr = "^2.6"
+paddlepaddle = "^2.3.2"
 dependency-injector = "^4.37.0"
-numba = "^0.54.1"
-Pillow = "8.2.0"
+numba = "^0.56.0"
+Pillow = "^9.2.0"
+tesserocr = "^2.5.2"
+Jinja2 = "^3.1.2"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"
 isort = "^5.10.1"
+mypy = "^0.971"
 
 [build-system]
 requires = ["poetry>=0.12"]
