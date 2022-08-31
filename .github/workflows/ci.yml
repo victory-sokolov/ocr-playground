@@ -17,6 +17,5 @@ jobs:
       - name: Run Super-Linter
         uses: github/super-linter@v4.8.7
         env:
-          DOCKERFILE_HADOLINT_FILE_NAME: linters/.hadolint.yaml
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

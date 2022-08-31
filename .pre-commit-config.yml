@@ -1,0 +1,38 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+        exclude: ^(.)+\.(json|yaml)$
+      - id: debug-statements
+      - id: detect-private-key
+      - id: check-merge-conflict
+
+  - repo: https://github.com/hadialqattan/pycln
+    rev: stable
+    hooks:
+    - id: pycln
+      args: [--config=pyproject.toml]
+
+  - repo: https://github.com/pycqa/isort
+    rev: stable
+    hooks:
+      - id: isort
+        files: "\\.(py)$"
+        args: [--check, --settings-path=.isort.cfg]
+
+  - repo: https://github.com/ambv/black
+    rev: stable
+    hooks:
+      - id: black
+
+  -   repo: https://gitlab.com/pycqa/flake8
+      rev: stable
+      hooks:
+      - id: flake8
+
+  - repo: https://github.com/asottile/add-trailing-comma
+    rev: stable
+    hooks:
+    -   id: add-trailing-comma
