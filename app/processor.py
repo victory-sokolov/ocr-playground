@@ -1,13 +1,16 @@
 import os
+from typing import Union
 from uuid import uuid1
 
 import cv2
 import imutils
+from utils.helpers import timeit
 from config import config
 from recognizers import Recognizer
 from redis import Redis
 from rq import Queue
 from transform import four_point_transform
+from loguru import logger
 
 config_name = config["development"]
 
@@ -16,17 +19,20 @@ class Processor:
     def __init__(self, recognizer: Recognizer) -> None:
         self.recognizer = recognizer
 
-    def process(self, files):
+    @timeit
+    def process(self, files: Union[list, str]) -> list:
+
         recognised_data = []
 
         if type(files) is not list:
             files = [files]
 
         for image in files:
+            logger.info(f"Processing image {image}")
             img = cv2.imread(f"static/{image}")
 
             if img is None:
-                raise FileExistsError("Image not found")
+                raise FileExistsError(f"Image {img} is not found")
 
             # img_cut = self.image_contours(img)
 
@@ -38,12 +44,13 @@ class Processor:
             )[1]
 
             # Save resized image
-            img_name = f"{str(uuid1())}.jpg"
+            img_id = str(uuid1())
+            img_name = f"{img_id}.jpg"
             img_path = f"static/processed/{img_name}"
             cv2.imwrite(img_path, img)
 
             # temporary processed image to used by OCR engine
-            processed_img = f"static/temp-{str(uuid1)}.jpg"
+            processed_img = f"static/temp-{img_id}.jpg"
             cv2.imwrite(processed_img, thresh)
 
             recognition_result = self.recognizer.recognize(processed_img)
@@ -88,5 +95,4 @@ class Processor:
         q = Queue(connection=Redis())
         q.empty()
         job = q.enqueue(self.process, args=([images]))
-
         print(job.result)
