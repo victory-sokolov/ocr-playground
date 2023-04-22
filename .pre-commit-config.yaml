@@ -10,29 +10,40 @@ repos:
       - id: check-merge-conflict
 
   - repo: https://github.com/hadialqattan/pycln
-    rev: stable
+    rev: v2.1.3
     hooks:
     - id: pycln
       args: [--config=pyproject.toml]
 
   - repo: https://github.com/pycqa/isort
-    rev: stable
+    rev: 5.12.0
     hooks:
       - id: isort
-        files: "\\.(py)$"
-        args: [--check, --settings-path=.isort.cfg]
 
   - repo: https://github.com/ambv/black
-    rev: stable
+    rev: 23.3.0
     hooks:
       - id: black
 
-  -   repo: https://gitlab.com/pycqa/flake8
-      rev: stable
-      hooks:
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
       - id: flake8
 
   - repo: https://github.com/asottile/add-trailing-comma
-    rev: stable
+    rev: v2.4.0
     hooks:
-    -   id: add-trailing-comma
+      - id: add-trailing-comma
+
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: ''
+    hooks:
+      - id: mypy
