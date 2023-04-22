@@ -1,3 +1,3 @@
 #!/bin/bash
 
-uvicorn app:app --reload --log-level debug
+poetry run uvicorn app:app --reload --log-level debug
