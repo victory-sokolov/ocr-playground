@@ -641,4 +641,3 @@ disable=
     C0116, # missing function or method docstring
     C0115, # missing class docstring
     R0903, # Too few public method
-    
