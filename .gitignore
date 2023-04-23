@@ -132,3 +132,4 @@ dmypy.json
 app/static/processed
 app/static/docs
 app/static/*.zip
+app/static/temp*

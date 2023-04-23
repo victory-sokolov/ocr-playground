@@ -1,11 +1,11 @@
 [flake8]
 max-line-length = 90
 ignore =
-    C114,C116,B008
+    C114,C116,B008,S404,S603
 max-complexity = 10
 extend-ignore = E203
-extend-immutable-calls = 
-    fastapi.Depends, 
+extend-immutable-calls =
+    fastapi.Depends,
     fastapi.params.Depends
 
 exclude =
