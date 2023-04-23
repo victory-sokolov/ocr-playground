@@ -7,10 +7,10 @@ from loguru import logger
 def save_file(file) -> None:
     file_object = file.file
     file_name = file.filename
-    upload_folder = open(os.path.join("./static", file_name), "wb+")
-    logger.info(f"Storing file {file_name}")
-    shutil.copyfileobj(file_object, upload_folder)
-    upload_folder.close()
+
+    with open(os.path.join("./static", file_name), "wb+") as f_name:
+        logger.info(f"Storing file {f_name}")
+        shutil.copyfileobj(file_object, f_name)
 
 
 def is_archive_file(file: str) -> bool:

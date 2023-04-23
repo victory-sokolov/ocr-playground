@@ -4,15 +4,16 @@ from uuid import uuid1
 
 import cv2
 import imutils
-from utils.helpers import timeit
-from config import config
-from recognizers import Recognizer
+from loguru import logger
 from redis import Redis
 from rq import Queue
-from transform import four_point_transform
-from loguru import logger
 
-config_name = config["development"]
+from app.config import config
+from app.recognizers import Recognizer
+from app.transform import four_point_transform
+from app.utils.helpers import timeit
+
+Config = config["development"]
 
 
 class Processor:
@@ -21,10 +22,9 @@ class Processor:
 
     @timeit
     def process(self, files: Union[list, str]) -> list:
-
         recognised_data = []
 
-        if type(files) is not list:
+        if isinstance(files, list):
             files = [files]
 
         for image in files:
@@ -40,7 +40,10 @@ class Processor:
             img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
             thresh = cv2.threshold(
-                img_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
+                img_gray,
+                0,
+                255,
+                cv2.THRESH_BINARY + cv2.THRESH_OTSU,
             )[1]
 
             # Save resized image
@@ -57,7 +60,6 @@ class Processor:
             recognised_data.append({"image": img_name, "text": recognition_result})
 
             # remove temp image
-            # ToDo: Refactor use Context manager
             os.remove(processed_img)
 
         return recognised_data
@@ -77,22 +79,22 @@ class Processor:
         cnts = imutils.grab_contours(cnts)
         cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:5]
 
-        for c in cnts:
+        for cnt in cnts:
             # approximate the contour
-            peri = cv2.arcLength(c, True)
-            approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+            peri = cv2.arcLength(cnt, True)
+            approx = cv2.approxPolyDP(cnt, 0.02 * peri, True)
 
             if len(approx) == 4:
-                screenCnt = approx
+                screen_cnt = approx
                 break
 
         # show the contour (outline) of the piece of paper
-        cv2.drawContours(image, [screenCnt], -1, (0, 255, 0), 2)
-        warped = four_point_transform(orig, screenCnt.reshape(4, 2) * ratio)
+        cv2.drawContours(image, [screen_cnt], -1, (0, 255, 0), 2)
+        warped = four_point_transform(orig, screen_cnt.reshape(4, 2) * ratio)
         return warped
 
     def recognition_queue(self, images):
-        q = Queue(connection=Redis())
-        q.empty()
-        job = q.enqueue(self.process, args=([images]))
+        queue = Queue(connection=Redis())
+        queue.empty()
+        job = queue.enqueue(self.process, args=[images])
         print(job.result)

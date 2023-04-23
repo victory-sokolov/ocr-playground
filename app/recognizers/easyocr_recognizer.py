@@ -1,5 +1,6 @@
 import easyocr
 from loguru import logger
+
 from .recognizer import Recognizer
 
 

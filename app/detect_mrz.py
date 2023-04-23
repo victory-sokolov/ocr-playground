@@ -53,7 +53,9 @@ def get_mrz(images):
         # find contours in the thresholded image and sort them by their
         # size
         cnts = cv2.findContours(
-            thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+            thresh.copy(),
+            cv2.RETR_EXTERNAL,
+            cv2.CHAIN_APPROX_SIMPLE,
         )
         cnts = imutils.grab_contours(cnts)
         cnts = sorted(cnts, key=cv2.contourArea, reverse=True)

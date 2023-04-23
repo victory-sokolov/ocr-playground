@@ -13,7 +13,7 @@ from app.containers import RecognitionContainer
 from app.utils.file import is_archive_file, save_file
 from app.utils.helpers import clean
 
-config_name = config["development"]
+Config = config["development"]
 app = FastAPI(debug=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -41,7 +41,7 @@ def upload_image(request: Request, file: UploadFile = File(...)):
     extension = f_name.split(".")[-1]
     processor = RecognitionContainer.processor()
 
-    if extension not in config_name.ALLOWED_IMAGE_EXTENSIONS:
+    if extension not in Config.ALLOWED_IMAGE_EXTENSIONS:
         return {"status": f"File with extension {extension} is not allowed"}
 
     save_file(file)

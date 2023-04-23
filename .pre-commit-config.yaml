@@ -48,10 +48,14 @@ repos:
       - id: pylint
         name: pylint
         entry: poetry run pylint app/
-        language: python
+        language: system
         types: [python]
         always_run: true
         pass_filenames: false
+        args:
+          [
+            "--rcfile=.pylintrc",
+          ]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: 'v1.2.0'

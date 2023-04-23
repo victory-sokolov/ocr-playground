@@ -1,16 +1,18 @@
-from dependency_injector import containers, providers
-from processor import Processor
-from recognizers import EasyOcr, Paddle, Tesseract
+from dependency_injector import containers
+from dependency_injector.providers import Configuration, Container, Factory, Singleton
+
+from app.processor import Processor
+from app.recognizers import EasyOcr, Paddle, Tesseract
 
 
 class Recognizers(containers.DeclarativeContainer):
-    tesseract = providers.Singleton(Tesseract)
-    paddle = providers.Singleton(Paddle)
-    easyocr = providers.Singleton(EasyOcr)
+    tesseract = Singleton(Tesseract)
+    paddle = Singleton(Paddle)
+    easyocr = Singleton(EasyOcr)
 
 
 class RecognitionContainer(containers.DeclarativeContainer):
-    config = providers.Configuration()
-    recognizers = providers.Container(Recognizers)
+    config = Configuration()
+    recognizer: Container[Recognizers] = Container(Recognizers)
 
-    processor = providers.Factory(Processor, recognizer=recognizers.tesseract)
+    processor = Factory(Processor, recognizer=recognizer.container.tesseract)

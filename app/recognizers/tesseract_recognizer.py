@@ -1,6 +1,7 @@
+from loguru import logger
 from PIL import Image
 from tesserocr import OEM, PyTessBaseAPI
-from loguru import logger
+
 from .recognizer import Recognizer
 
 

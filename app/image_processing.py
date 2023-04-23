@@ -14,14 +14,14 @@ class ImageProcessing:
         self.image_name = image
         self.image = cv2.imread(f"static/{image}")
 
-    def change_image_DPI(self, image):
+    def change_image_dpi(self, image):
         params = ["mogrify", "-set", "density", "300", image]
         Popen(params, stdout=PIPE, stderr=STDOUT, text=True)
 
     def rotate(self, image):
         angle = 90
-        (h, w) = image.shape[:2]
-        if h < w:
+        (height, width) = image.shape[:2]
+        if height < width:
             with WandImage(filename=self.image_path) as img:
                 img.rotate(angle)
                 img_buffer = np.asarray(bytearray(img.make_blob()), dtype=np.uint8)
@@ -29,8 +29,8 @@ class ImageProcessing:
             if img_buffer is not None:
                 retval = cv2.imdecode(img_buffer, cv2.IMREAD_UNCHANGED)
                 return retval
-        else:
-            return self.image
+
+        return self.image
 
     def gray_scale(self, image):
         return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -43,7 +43,12 @@ class ImageProcessing:
 
     def adaptive_thresh(self, image):
         return cv2.adaptiveThreshold(
-            image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 121, 12
+            image,
+            255,
+            cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+            cv2.THRESH_BINARY,
+            121,
+            12,
         )
 
     def save_image(self, image) -> None:
@@ -56,11 +61,15 @@ class ImageProcessing:
             angle = -(90 + angle)
         else:
             angle = -angle
-        (h, w) = image.shape[:2]
-        center = (w // 2, h // 2)
-        M = cv2.getRotationMatrix2D(center, angle, 1.0)
+        (height, width) = image.shape[:2]
+        center = (width // 2, height // 2)
+        matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
         rotated = cv2.warpAffine(
-            image, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE
+            image,
+            matrix,
+            (width, height),
+            flags=cv2.INTER_CUBIC,
+            borderMode=cv2.BORDER_REPLICATE,
         )
         return rotated
 
@@ -79,13 +88,15 @@ class ImageProcessing:
         image_resized = cv2.resize(image, (800, 800))
         blurred = cv2.GaussianBlur(image_resized, (5, 5), 0)
         edge = cv2.Canny(blurred, 70, 200)
-        contours, hierarchy = cv2.findContours(
-            edge, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE
+        contours, _ = cv2.findContours(
+            edge,
+            cv2.RETR_LIST,
+            cv2.CHAIN_APPROX_SIMPLE,
         )
         contours = sorted(contours, key=cv2.contourArea, reverse=True)
         for contour in contours:
-            sq = cv2.arcLength(contour, True)
-            approx = cv2.approxPolyDP(contour, 0.02 * sq, True)
+            arc_length = cv2.arcLength(contour, True)
+            approx = cv2.approxPolyDP(contour, 0.02 * arc_length, True)
 
             if len(approx) == 4:
                 # target = approx
@@ -94,8 +105,8 @@ class ImageProcessing:
         # approx = mapper.mapp(target)  # find endpoints of the sheet
         pts = np.float32([[0, 0], [800, 0], [800, 800], [0, 800]])
 
-        op = cv2.getPerspectiveTransform(approx, pts)
-        dst = cv2.warpPerspective(image, op, (800, 800))
+        perspective_transform = cv2.getPerspectiveTransform(approx, pts)
+        dst = cv2.warpPerspective(image, perspective_transform, (800, 800))
         return dst
 
     @jit(nopython=True, parallel=True)
