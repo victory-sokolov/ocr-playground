@@ -23,16 +23,19 @@ class Processor:
     @timeit
     def process(self, files: Union[list, str]) -> list:
         recognised_data = []
-
-        if isinstance(files, list):
+        if not isinstance(files, list):
             files = [files]
 
         for image in files:
             logger.info(f"Processing image {image}")
-            img = cv2.imread(f"static/{image}")
-
+            path = f"app/static/{image}"
+            img = cv2.imread(path)
+            
+            ex = os.path.exists(path)
+            print("Image exists", ex)
+            print("Image ->>", img)
             if img is None:
-                raise FileExistsError(f"Image {img} is not found")
+                raise FileExistsError(f"Image {path} is not found")
 
             # img_cut = self.image_contours(img)
 
@@ -49,11 +52,11 @@ class Processor:
             # Save resized image
             img_id = str(uuid1())
             img_name = f"{img_id}.jpg"
-            img_path = f"static/processed/{img_name}"
+            img_path = f"app/static/processed/{img_name}"
             cv2.imwrite(img_path, img)
 
             # temporary processed image to used by OCR engine
-            processed_img = f"static/temp-{img_id}.jpg"
+            processed_img = f"app/static/temp-{img_id}.jpg"
             cv2.imwrite(processed_img, thresh)
 
             recognition_result = self.recognizer.recognize(processed_img)

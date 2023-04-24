@@ -12,7 +12,7 @@ class ImageProcessing:
     def __init__(self, image):
         self.image_path = image
         self.image_name = image
-        self.image = cv2.imread(f"static/{image}")
+        self.image = cv2.imread(f"app/static/{image}")
 
     def change_image_dpi(self, image):
         params = ["mogrify", "-set", "density", "300", image]
@@ -52,7 +52,7 @@ class ImageProcessing:
         )
 
     def save_image(self, image) -> None:
-        cv2.imwrite(f"{os.getcwd()}/static/output.png", image)
+        cv2.imwrite(f"{os.getcwd()}/app/static/output.png", image)
 
     def deskew(self, image):
         coords = np.column_stack(np.where(image > 0))
@@ -112,7 +112,7 @@ class ImageProcessing:
     @jit(nopython=True, parallel=True)
     def run_pipeline(self):
         rotated_image = self.rotate(self.image)
-        cv2.imwrite(f"{os.getcwd()}/static/{self.image_name}", rotated_image)
+        cv2.imwrite(f"{os.getcwd()}/app/static/{self.image_name}", rotated_image)
         self.image = rotated_image
 
         return reduce(
