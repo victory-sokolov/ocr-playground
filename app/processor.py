@@ -22,7 +22,7 @@ class Processor:
 
     @timeit
     def process(self, files: Union[list, str]) -> list:
-        recognised_data = []
+        recognized_data = []
         if not isinstance(files, list):
             files = [files]
 
@@ -31,9 +31,6 @@ class Processor:
             path = f"app/static/{image}"
             img = cv2.imread(path)
             
-            ex = os.path.exists(path)
-            print("Image exists", ex)
-            print("Image ->>", img)
             if img is None:
                 raise FileExistsError(f"Image {path} is not found")
 
@@ -60,12 +57,12 @@ class Processor:
             cv2.imwrite(processed_img, thresh)
 
             recognition_result = self.recognizer.recognize(processed_img)
-            recognised_data.append({"image": img_name, "text": recognition_result})
+            recognized_data.append({"image": img_name, "text": recognition_result})
 
             # remove temp image
             os.remove(processed_img)
 
-        return recognised_data
+        return recognized_data
 
     def image_contours(self, image):
         ratio = image.shape[0] / 500.0

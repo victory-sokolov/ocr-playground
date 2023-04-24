@@ -46,7 +46,6 @@ def upload_image(request: Request, file: UploadFile = File(...)):
 
     save_file(file)
     if not is_archive_file(extension):
-        print("FIle name!!!", f_name)
         ocr = processor.process(f_name)
         # ocr = clean(ocr)
         return templates.TemplateResponse(
