@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.10.11-slim
 
 ENV LC_ALL=C \
     PYTHONDONTWRITEBYTECODE=1 \

@@ -9,7 +9,7 @@ Image preprocessing is being done using OpenCV
 ## Start project
 
 ```shell
-cd app && ./start.sh
+./start.sh
 ```
 
 ## Run inside Docker
