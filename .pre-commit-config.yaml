@@ -50,7 +50,6 @@ repos:
         entry: poetry run pylint app/
         language: system
         types: [python]
-        pass_filenames: true
         args:
           [
             "--rcfile=.pylintrc",
