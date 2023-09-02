@@ -30,7 +30,7 @@ class Processor:
             logger.info(f"Processing image {image}")
             path = f"app/static/{image}"
             img = cv2.imread(path)
-            
+
             if img is None:
                 raise FileExistsError(f"Image {path} is not found")
 

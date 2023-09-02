@@ -1,10 +1,5 @@
 from dependency_injector import containers
-from dependency_injector.providers import (
-    Configuration, 
-    Container, 
-    Factory,
-    Singleton
-)
+from dependency_injector.providers import Configuration, Container, Factory, Singleton
 
 from app.processor import Processor
 from app.recognizers import EasyOcr, Paddle, Tesseract
