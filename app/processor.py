@@ -53,7 +53,7 @@ class Processor:
             cv2.imwrite(img_path, img)
 
             # temporary processed image to used by OCR engine
-            processed_img = f"app/static/temp-{img_id}.jpg"
+            processed_img = f"app/static/processed/temp-{img_id}.jpg"
             cv2.imwrite(processed_img, thresh)
 
             recognition_result = self.recognizer.recognize(processed_img)
