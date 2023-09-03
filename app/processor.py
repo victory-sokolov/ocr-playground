@@ -11,7 +11,7 @@ from rq import Queue
 from app.config import config
 from app.recognizers import Recognizer
 from app.transform import four_point_transform
-from app.utils.helpers import timeit
+from app.utils.helpers import clean, timeit
 
 Config = config["development"]
 
@@ -35,7 +35,6 @@ class Processor:
                 raise FileExistsError(f"Image {path} is not found")
 
             # img_cut = self.image_contours(img)
-
             img = cv2.resize(img, None, fx=1.2, fy=1.2, interpolation=cv2.INTER_CUBIC)
             img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -62,7 +61,8 @@ class Processor:
             # remove temp image
             os.remove(processed_img)
 
-        return recognized_data
+        ocr = clean(recognized_data)
+        return ocr
 
     def image_contours(self, image):
         ratio = image.shape[0] / 500.0
