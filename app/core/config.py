@@ -3,6 +3,7 @@ from typing import List
 
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 
@@ -37,23 +38,34 @@ class BaseConfig:
 class DevelopmentConfig(BaseConfig):
     """Development configuration"""
 
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    WRITER_DB_URL = os.getenv("WRITER_DB_URL")
+    READER_DB_URL = os.getenv("READER_DB_URL")
     DEBUG_TB_ENABLED = True
     BCRYPT_LOG_ROUNDS = 4
 
 
-class TestingConfig(BaseConfig):
+class TestConfig(BaseConfig):
     """Testing configuration"""
 
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = os.getenv("TEST_DATABASE_URL")
+    DATABASE_URI = os.getenv("TEST_DATABASE_URL")
     BCRYPT_LOG_ROUNDS = 4
     TOKEN_EXPIRATION_DAYS = 0
     TOKEN_EXPIRATION_SECONDS = 3
 
 
-config = {
-    "development": DevelopmentConfig,
-    "testing": TestingConfig,
-    "default": DevelopmentConfig,
-}
+class ProductionConfig(BaseConfig):
+    pass
+
+
+def get_config() -> BaseConfig:
+    env = os.getenv("ENV", "local")
+    config_type = {
+        "test": TestConfig(),
+        "local": DevelopmentConfig(),
+        "prod": ProductionConfig(),
+    }
+    return config_type[env]
+
+
+config = get_config()

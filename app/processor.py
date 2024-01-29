@@ -8,12 +8,9 @@ from loguru import logger
 from redis import Redis
 from rq import Queue
 
-from app.config import config
 from app.recognizers import Recognizer
 from app.transform import four_point_transform
 from app.utils.helpers import clean, timeit
-
-Config = config["development"]
 
 
 class Processor:

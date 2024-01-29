@@ -6,10 +6,6 @@ from os.path import isfile, join
 from fastapi import UploadFile
 from loguru import logger
 
-from app.config import config
-
-Config = config["development"]
-
 
 def save_file(file: UploadFile) -> None:
     file_name = file.filename

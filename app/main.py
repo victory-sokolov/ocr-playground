@@ -4,11 +4,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from loguru import logger
 
-from app.config import config
 from app.containers import RecognitionContainer
+from app.core.config import config
 from app.utils.file import is_archive_file, save_file, unarchive_files
 
-Config = config["development"]
 app = FastAPI(debug=True)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
@@ -26,7 +25,7 @@ def upload_image(request: Request, file: UploadFile = File(...)):
     extension = f_name.split(".")[-1]
     logger.info(f"Uploading {f_name}", extra={"extension": extension})
 
-    if extension not in Config.ALLOWED_IMAGE_EXTENSIONS:
+    if extension not in config.ALLOWED_IMAGE_EXTENSIONS:
         return {"status": f"File with extension {extension} is not allowed"}
 
     save_file(file)
