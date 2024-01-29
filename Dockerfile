@@ -45,5 +45,5 @@ COPY app/ .
 # Move traineddata files to $TESSDATA
 COPY app/traineddata/ $TESSDATA_PREFIX
 
-EXPOSE 8000
-CMD ["uvicorn", "--reload", "--host=0.0.0.0", "--port=8000", "app:app"]
+EXPOSE 8002
+CMD ["make", "prod"]
