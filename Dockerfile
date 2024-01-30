@@ -1,6 +1,14 @@
-FROM python:3.10.11-slim
+ARG DEFAULT_PYTHON_VERSION=3.10.13
 
-ENV LC_ALL=C \
+# Set build argument to use .python-version file if it exists, or default version
+ARG PYTHON_VERSION=${PYTHON_VERSION:-$(cat .python-version)}
+
+# Use specified Python version or default version
+FROM python:${PYTHON_VERSION:-${DEFAULT_PYTHON_VERSION}}-bullseye as builder
+
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    LC_ALL=C \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
@@ -8,19 +16,17 @@ ENV LC_ALL=C \
     POETRY_HOME="/home/poetry" \
     POETRY_VIRTUALENVS_CREATE=false \
     POETRY_NO_INTERACTION=1 \
-    POETRY_VERSION=1.0.10 \
+    POETRY_VERSION=1.7.1 \
     PYSETUP_PATH="/home/pysetup" \
-    TESSDATA_PREFIX="/usr/share/tesseract-ocr/4.00/tessdata"
+    TESSDATA_PREFIX="/usr/share/tesseract-ocr/5.00/tessdata"
 
 ENV PATH="$POETRY_HOME/bin:$PATH"
 
 WORKDIR $PYSETUP_PATH
 
-RUN apt-get update && apt-get install --no-install-recommends -y \
+RUN apt-get update && apt-get install --no-install-recommends --fix-missing -y \
     build-essential \
     pkg-config \
-    libpq-dev \
-    libgl1-mesa-glx \
     libtesseract-dev \
     libleptonica-dev \
     vim \
@@ -32,8 +38,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+RUN curl -sSL https://install.python-poetry.org | python3 -
 
 COPY poetry.lock pyproject.toml ../
 RUN poetry install --no-dev --no-ansi
