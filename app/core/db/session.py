@@ -26,10 +26,10 @@ class EngineType(Enum):
 
 engines = {
     EngineType.WRITER: create_async_engine(
-        config.WRITER_DB_URL, pool_recycle=3600, echo=config.SQLALCHEMY_ECHO
+        config.WRITER_DB_URL, pool_recycle=3600, echo=config.SQLALCHEMY_ECHO,
     ),
     EngineType.READER: create_async_engine(
-        config.READER_DB_URL, pool_recycle=3600, echo=config.SQLALCHEMY_ECHO
+        config.READER_DB_URL, pool_recycle=3600, echo=config.SQLALCHEMY_ECHO,
     ),
 }
 
