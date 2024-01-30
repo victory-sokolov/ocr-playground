@@ -1,24 +1,25 @@
 import os
 from typing import List
 
-from dotenv import load_dotenv
+from pydantic_settings import BaseSettings
 
 
-load_dotenv()
-
-
-class BaseConfig:
+class Settings(BaseSettings):
     """Base configuration"""
 
-    TESTING = False
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = os.urandom(24)
-    DEBUG_TB_ENABLED = False
-    DEBUG_TB_INTERCEPT_REDIRECTS = False
-    BCRYPT_LOG_ROUNDS = 13
-    TOKEN_EXPIRATION_DAYS = 30
-    TOKEN_EXPIRATION_SECONDS = 0
-    UPLOAD_FOLDER = os.path.abspath(os.curdir) + os.getenv("UPLOAD_FOLDER", "static")
+    DEBUG: bool = True
+    WRITER_DB_URL: str
+    READER_DB_URL: str
+    SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
+    SECRET_KEY: bytes = os.urandom(24)
+    DEBUG_TB_ENABLED: bool = False
+    DEBUG_TB_INTERCEPT_REDIRECTS: bool = False
+    BCRYPT_LOG_ROUNDS: int = 13
+    TOKEN_EXPIRATION_DAYS: int = 30
+    TOKEN_EXPIRATION_SECONDS: int = 0
+    UPLOAD_FOLDER: str = os.path.abspath(os.curdir) + os.getenv(
+        "UPLOAD_FOLDER", "static"
+    )
     ALLOWED_IMAGE_EXTENSIONS: List[str] = [
         "png",
         "jpg",
@@ -28,44 +29,46 @@ class BaseConfig:
         "xztar",
         "zip",
     ]
-    OCR_ENGINE = os.getenv("OCR_ENGINE")
+    OCR_ENGINE: str = ""
+
+    class Config:
+        env_file = ".env"
+        extra = "ignore"
 
     @staticmethod
     def init_app(app):
         pass
 
 
-class DevelopmentConfig(BaseConfig):
-    """Development configuration"""
-
-    WRITER_DB_URL = os.getenv("WRITER_DB_URL")
-    READER_DB_URL = os.getenv("READER_DB_URL")
-    DEBUG_TB_ENABLED = True
-    BCRYPT_LOG_ROUNDS = 4
-
-
-class TestConfig(BaseConfig):
-    """Testing configuration"""
-
-    TESTING = False
-    DATABASE_URI = os.getenv("TEST_DATABASE_URL")
-    BCRYPT_LOG_ROUNDS = 4
-    TOKEN_EXPIRATION_DAYS = 0
-    TOKEN_EXPIRATION_SECONDS = 3
+class DevelopmentConfig(Settings):
+    WRITER_DB_URL: str = ""
+    READER_DB_URL: str = ""
+    SQLALCHEMY_ECHO: bool = True
+    DEBUG_TB_ENABLED: bool = True
+    BCRYPT_LOG_ROUNDS: int = 4
 
 
-class ProductionConfig(BaseConfig):
-    pass
+class TestConfig(Settings):
+    WRITER_DB_URL: str = ""
+    READER_DB_URL: str = ""
 
 
-def get_config() -> BaseConfig:
+class ProductionConfig(Settings):
+    WRITER_DB_URL: str = ""
+    READER_DB_URL: str = ""
+    DEBUG: bool = False
+    SQLALCHEMY_ECHO: bool = False
+
+
+def get_config():
     env = os.getenv("ENV", "local")
+
     config_type = {
-        "test": TestConfig(),
         "local": DevelopmentConfig(),
         "prod": ProductionConfig(),
+        "test": TestConfig(),
     }
     return config_type[env]
 
 
-config = get_config()
+config: Settings = get_config()

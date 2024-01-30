@@ -8,7 +8,7 @@ from app.containers import RecognitionContainer
 from app.core.config import config
 from app.utils.file import is_archive_file, save_file, unarchive_files
 
-app = FastAPI(debug=True)
+app = FastAPI(debug=config.DEBUG)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 templates = Jinja2Templates(directory="app/templates")

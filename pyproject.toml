@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "ocr-playground"
+name = "ocrapp"
 version = "0.1.0"
-description = ""
+description = "OCR app built with FastAPI"
 authors = ["victory-sokolov <viktorsokolov.and@gmail.com>"]
 
 [tool.poetry.dependencies]
@@ -28,6 +28,11 @@ loguru = "^0.7.2"
 wand = "^0.6.11"
 opencv-python = "^4.9.0.80"
 opencv-python-headless = "^4.8.0.76"
+asyncpg = "^0.29.0"
+psycopg2 = "^2.9.9"
+pydantic = "^2.5.3"
+pydantic-settings = "^2.1.0"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.25"}
 
 [tool.black]
 line-length = 88
@@ -61,6 +66,7 @@ black = "^24.1.1"
 isort = "^5.13.2"
 mypy = "^1.8.0"
 flake8 = "^7.0.0"
+alembic = "^1.13.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
