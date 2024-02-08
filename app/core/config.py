@@ -7,6 +7,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     """Base configuration"""
 
+    APP_NAME: str = "OCR App"
     DEBUG: bool = True
     WRITER_DB_URL: str
     READER_DB_URL: str
@@ -18,7 +19,8 @@ class Settings(BaseSettings):
     TOKEN_EXPIRATION_DAYS: int = 30
     TOKEN_EXPIRATION_SECONDS: int = 0
     UPLOAD_FOLDER: str = os.path.abspath(os.curdir) + os.getenv(
-        "UPLOAD_FOLDER", "static",
+        "UPLOAD_FOLDER",
+        "static",
     )
     ALLOWED_IMAGE_EXTENSIONS: List[str] = [
         "png",

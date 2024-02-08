@@ -4,12 +4,15 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from loguru import logger
 
+from app.api import router as extract_views
 from app.containers import RecognitionContainer
 from app.core.config import config
 from app.utils.file import is_archive_file, save_file, unarchive_files
 
-app = FastAPI(debug=config.DEBUG)
+app = FastAPI(title=config.APP_NAME, debug=config.DEBUG)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+app.include_router(router=extract_views, prefix="/v1")
 
 templates = Jinja2Templates(directory="app/templates")
 

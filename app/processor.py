@@ -4,62 +4,84 @@ from uuid import uuid1
 
 import cv2
 import imutils
+import numpy as np
 from loguru import logger
 from redis import Redis
 from rq import Queue
 
 from app.recognizers import Recognizer
 from app.transform import four_point_transform
-from app.utils.helpers import clean, timeit
 
 
 class Processor:
     def __init__(self, recognizer: Recognizer) -> None:
         self.recognizer = recognizer
 
-    @timeit
-    def process(self, files: Union[list, str]) -> list:
+    def pre_process(self, img) -> str:
+        # img_cut = self.image_contours(img)
+        img = cv2.resize(img, None, fx=1.2, fy=1.2, interpolation=cv2.INTER_CUBIC)
+        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        thresh = cv2.threshold(
+            img_gray,
+            0,
+            255,
+            cv2.THRESH_BINARY + cv2.THRESH_OTSU,
+        )[1]
+
+        # Save resized image
+        img_id = str(uuid1())
+        img_name = f"{img_id}.jpg"
+        img_path = f"app/static/processed/{img_name}"
+        cv2.imwrite(img_path, img)
+
+        # temporary processed image to used by OCR engine
+        processed_img = f"app/static/processed/temp-{img_id}.jpg"
+        cv2.imwrite(processed_img, thresh)
+
+        recognition_result = self.recognizer.recognize(processed_img)
+        # remove temp image
+        os.remove(processed_img)
+
+        return recognition_result
+
+    def _load_image(self, img_name: str):
+        path = f"app/static/{img_name}"
+        img = cv2.imread(path)
+
+        if img is None:
+            raise FileExistsError(f"Image {path} is not found")
+
+        return img
+
+    def process_list_of_images(self, files: list[str]) -> list:
         recognized_data = []
-        if not isinstance(files, list):
-            files = [files]
 
         for image in files:
             logger.info(f"Processing image {image}")
-            path = f"app/static/{image}"
-            img = cv2.imread(path)
 
-            if img is None:
-                raise FileExistsError(f"Image {path} is not found")
+            img = self._load_image(image)
+            recognition_result = self.pre_process(img)
+            recognized_data.append({"text": recognition_result})
 
-            # img_cut = self.image_contours(img)
-            img = cv2.resize(img, None, fx=1.2, fy=1.2, interpolation=cv2.INTER_CUBIC)
-            img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        return recognized_data
 
-            thresh = cv2.threshold(
-                img_gray,
-                0,
-                255,
-                cv2.THRESH_BINARY + cv2.THRESH_OTSU,
-            )[1]
+    def process_image_bytes(self, file: bytes) -> str:
+        nparr = np.fromstring(file, np.uint8)
+        img_np = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        data = self.pre_process(img_np)
+        return data
 
-            # Save resized image
-            img_id = str(uuid1())
-            img_name = f"{img_id}.jpg"
-            img_path = f"app/static/processed/{img_name}"
-            cv2.imwrite(img_path, img)
+    def process(self, files: Union[list, str, bytes]) -> Union[str, list]:
+        if isinstance(files, list):
+            self.process_list_of_images(files)
+        elif isinstance(files, bytes):
+            return self.process_image_bytes(files)
+        elif isinstance(files, str):
+            image = self._load_image(files)
+            return self.pre_process(image)
 
-            # temporary processed image to used by OCR engine
-            processed_img = f"app/static/processed/temp-{img_id}.jpg"
-            cv2.imwrite(processed_img, thresh)
-
-            recognition_result = self.recognizer.recognize(processed_img)
-            recognized_data.append({"image": img_name, "text": recognition_result})
-
-            # remove temp image
-            os.remove(processed_img)
-
-        ocr = clean(recognized_data)
-        return ocr
+        raise ValueError(f"Unknown file type: {type(files)}")
 
     def image_contours(self, image):
         ratio = image.shape[0] / 500.0
@@ -93,5 +115,4 @@ class Processor:
     def recognition_queue(self, images):
         queue = Queue(connection=Redis())
         queue.empty()
-        job = queue.enqueue(self.process, args=[images])
-        print(job.result)
+        queue.enqueue(self.process, args=[images])
