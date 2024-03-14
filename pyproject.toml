@@ -5,7 +5,7 @@ description = "OCR app built with FastAPI"
 authors = ["victory-sokolov <viktorsokolov.and@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10.11"
+python = "^3.10.13"
 fastapi = "^0.109.0"
 uvicorn = "^0.27.0"
 python-multipart = "^0.0.6"
