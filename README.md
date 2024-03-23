@@ -16,6 +16,10 @@ make dev
 
 ## Run inside Docker
 
+Build Dockerfile `docker build -t ocr-app .`
+
+Run app inside Docker
+
 ```bash
-docker run -p 8000:8000 -it --rm ocr-playground
+docker run -p 8000:8000 -it --rm ocr-app
 ```
