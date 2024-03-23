@@ -33,6 +33,7 @@ class Processor:
         img_id = str(uuid1())
         img_name = f"{img_id}.jpg"
         img_path = f"app/static/processed/{img_name}"
+        # TODO: Use TempFile module to store image and remove it
         cv2.imwrite(img_path, img)
 
         # temporary processed image to used by OCR engine
