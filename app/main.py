@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, Request, UploadFile
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile, status
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -12,18 +12,24 @@ from app.utils.file import is_archive_file, save_file, unarchive_files
 app = FastAPI(title=config.APP_NAME, debug=config.DEBUG)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-app.include_router(router=extract_views, prefix="/v1")
+app.include_router(router=extract_views, prefix="/api/v1")
 
 templates = Jinja2Templates(directory="app/templates")
 
 
-@app.get("/", response_class=HTMLResponse)
-def upload_form(request: Request):
+@app.get("/", response_class=HTMLResponse, include_in_schema=False)
+async def upload_form(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
-@app.post("/upload", response_class=HTMLResponse)
-def upload_image(request: Request, file: UploadFile = File(...)):
+@app.post("/upload", response_class=HTMLResponse, include_in_schema=False)
+async def upload_image(request: Request, file: UploadFile = File(...)):
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail="Only image files are supported.",
+        )
+
     f_name = file.filename
     extension = f_name.split(".")[-1]
     logger.info(f"Uploading {f_name}", extra={"extension": extension})
