@@ -3,10 +3,9 @@ from io import BytesIO
 
 import cv2
 import numpy as np
-
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app import app
 
 
 class MainTestCase(unittest.TestCase):

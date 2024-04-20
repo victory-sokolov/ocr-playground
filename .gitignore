@@ -134,3 +134,4 @@ app/static/docs
 app/static/*.zip
 app/static/temp*
 data/
+certs/

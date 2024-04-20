@@ -4,7 +4,7 @@ test: # Run tests
 	poetry run python -m unittest discover app/tests
 
 dev: # Run dev server
-	poetry run uvicorn app.main:app --reload --log-level debug
+	poetry run python main.py
 
 prod: # Run prod server
 	poetry run uvicorn app.main:app --log-level info
