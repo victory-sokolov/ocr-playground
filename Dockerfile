@@ -46,7 +46,7 @@ WORKDIR /app
 COPY poetry.lock pyproject.toml ./
 RUN poetry install --no-dev --no-ansi
 
-COPY . .
+COPY . ./app
 
 # Move traineddata files to $TESSDATA
 COPY app/traineddata/ $TESSDATA_PREFIX
