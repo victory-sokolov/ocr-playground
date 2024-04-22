@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     WRITER_DB_URL: str
     READER_DB_URL: str
+    SQLALCHEMY_ECHO: bool = True
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
     SECRET_KEY: bytes = os.urandom(24)
     DEBUG_TB_ENABLED: bool = False
@@ -45,7 +46,6 @@ class Settings(BaseSettings):
 class DevelopmentConfig(Settings):
     WRITER_DB_URL: str = ""
     READER_DB_URL: str = ""
-    SQLALCHEMY_ECHO: bool = True
     DEBUG_TB_ENABLED: bool = True
     BCRYPT_LOG_ROUNDS: int = 4
 
