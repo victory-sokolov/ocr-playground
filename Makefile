@@ -16,7 +16,7 @@ showoutdated: # Show outdated Poetry packages
 	poetry show --outdated -T
 
 migrate: # Create migration
-	poetry run alembic revision -m
+	poetry run alembic revision -m "$(filter-out $@,$(MAKECMDGOALS))"
 	poetry run alembic upgrade head
 
 help: # Show help for each of the Makefile recipes.
