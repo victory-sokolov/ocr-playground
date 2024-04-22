@@ -14,6 +14,14 @@ Image preprocessing is being done using OpenCV
 make dev
 ```
 
+## Generate SSL certificate to run server over https
+```bash
+brew install mkcert
+
+mkdir certs && cd certs
+mkcert localhost 127.0.0.1 ::1
+```
+
 ## Run inside Docker
 
 Build Dockerfile `docker build -t ocr-app .`
