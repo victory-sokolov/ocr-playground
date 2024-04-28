@@ -33,6 +33,8 @@ psycopg2 = "^2.9.9"
 pydantic = "^2.6.0"
 pydantic-settings = "^2.1.0"
 sqlalchemy = {extras = ["asyncio"], version = "^2.0.25"}
+celery = "^5.4.0"
+gunicorn = "^22.0.0"
 
 [tool.black]
 line-length = 88

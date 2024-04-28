@@ -1,3 +1,3 @@
-from .base import Base
+from ...models.base import Base
 
 __all__ = ["Base"]

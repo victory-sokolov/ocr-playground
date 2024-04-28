@@ -9,8 +9,8 @@ class Settings(BaseSettings):
 
     APP_NAME: str = "OCR App"
     DEBUG: bool = True
-    WRITER_DB_URL: str
-    READER_DB_URL: str
+    WRITER_DB_URL: str = os.getenv("WRITER_DB_URL", "")
+    READER_DB_URL: str = os.getenv("READER_DB_URL", "")
     SQLALCHEMY_ECHO: bool = True
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
     SECRET_KEY: bytes = os.urandom(24)
@@ -44,8 +44,6 @@ class Settings(BaseSettings):
 
 
 class DevelopmentConfig(Settings):
-    WRITER_DB_URL: str = ""
-    READER_DB_URL: str = ""
     DEBUG_TB_ENABLED: bool = True
     BCRYPT_LOG_ROUNDS: int = 4
 
@@ -62,7 +60,7 @@ class ProductionConfig(Settings):
     SQLALCHEMY_ECHO: bool = False
 
 
-def get_config():
+def get_config() -> Settings:
     env = os.getenv("ENV", "local")
 
     config_type = {
@@ -73,4 +71,4 @@ def get_config():
     return config_type[env]
 
 
-config: Settings = get_config()
+config = get_config()

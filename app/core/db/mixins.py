@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, func
+from sqlalchemy import Boolean, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 
@@ -16,3 +16,8 @@ class TimestampMixin:
         onupdate=func.now(),
         nullable=False,
     )
+
+
+class SoftDeleteMixin:
+    deleted_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)

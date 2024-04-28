@@ -73,7 +73,7 @@ class Processor:
         data = self.pre_process(img_np)
         return data
 
-    def process(self, files: Union[list, str, bytes]) -> Union[str, list]:
+    def process(self, files: Union[list, str, bytes]) -> str:
         if isinstance(files, list):
             self.process_list_of_images(files)
         elif isinstance(files, bytes):
