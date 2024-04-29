@@ -40,7 +40,7 @@ services:
     expose:
       - "5431"
     volumes:
-      - ./data/pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h $$DB_HOST -p $$PGPORT -U $$POSTGRES_USER"]
       interval: 10s
@@ -68,6 +68,9 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning
     env_file:
       - ./grafana/config.monitoring
+
+volumes:
+  pg_data:
 
 networks:
   custom:
