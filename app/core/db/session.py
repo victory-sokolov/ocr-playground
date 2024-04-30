@@ -85,7 +85,7 @@ sessionmanager.init_db()
 
 
 async def get_db() -> AsyncIterator[AsyncSession]:
-    session = sessionmanager.session
+    session = sessionmanager.session()
     if session is None:
         raise Exception("DatabaseSessionManager is not initialized")
     try:

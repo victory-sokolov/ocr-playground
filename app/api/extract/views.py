@@ -1,12 +1,12 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Response, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.dependencies import document_service
 from app.api.extract.schemas import OcrRequest, OcrResponse
-from app.containers import RecognitionContainer
-from app.core.db.session import get_db
-from app.repositories.document import DocumentRepository
+from app.services.document import DocumentService
 
 router = APIRouter(tags=["Optical Character Recognition"])
 
@@ -18,12 +18,7 @@ router = APIRouter(tags=["Optical Character Recognition"])
 )
 async def data_recognition(
     data: OcrRequest,
-    db: AsyncSession = Depends(get_db),
+    service: Annotated[DocumentService, Depends(document_service)],
 ) -> Response:
-    processor = RecognitionContainer.processor()
-    ocr_data = processor.process(data.image_data)
-    content = {"raw_data": ocr_data}
-    repository = DocumentRepository(db)
-    id = await repository.add_one(content)
-    response = await repository.find_one(id)
-    return JSONResponse(content=jsonable_encoder(response))
+    document = await service.create_document(data)
+    return JSONResponse(content=jsonable_encoder(document))

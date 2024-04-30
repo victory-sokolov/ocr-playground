@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
 from uuid import UUID
 
+from fastapi import HTTPException
 from sqlalchemy import insert, select
-from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.db.session import get_db
 from app.models.base import Base
 
 
@@ -24,25 +25,31 @@ class AbstractRepository(ABC):
 class SQLAlchemyRepository(AbstractRepository):
     model = Base
 
-    def __init__(self, db: AsyncSession) -> None:
-        self.session = db
+    def __init__(self) -> None:
+        self.async_session = get_db()
 
-    async def add_one(self, data: dict):
-        stmt = insert(self.model).values(**data).returning(self.model.id)
-        res = await self.session.execute(stmt)
-        await self.session.commit()
+    async def add_one(self, data: dict) -> UUID:
+        async for db_session in get_db():
+            async with db_session as session:
+                stmt = insert(self.model).values(**data).returning(self.model.id)
+                res = await session.execute(stmt)
+                await session.commit()
         return res.scalar_one()
 
     async def find_all(self):
-        stmt = select(self.model)
-        res = await self.session.execute(stmt)
-        res = [row[0].to_read_model() for row in res.all()]
+        async for db_session in get_db():
+            async with db_session as session:
+                stmt = select(self.model)
+                res = await session.execute(stmt)
+                res = [row[0].to_read_model() for row in res.all()]
         return res
 
     async def find_one(self, id: UUID):
-        stmt = select(self.model).filter_by(id=id)
-        res = await self.session.execute(stmt)
-        data = res.fetchone()
-        if not data:
-            return None
+        async for db_session in get_db():
+            async with db_session as session:
+                stmt = select(self.model).filter_by(id=id)
+                res = await session.execute(stmt)
+                data = res.fetchone()
+                if not data:
+                    raise HTTPException(status_code=404, detail="Item not found")
         return data[0].to_read_model()
