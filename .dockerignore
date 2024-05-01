@@ -2,7 +2,8 @@ Dockerfile
 .dockerignore
 .vscode
 .github
-data
+data/
 docker
 .env
 .venv
+.pre-commit-config.yaml
