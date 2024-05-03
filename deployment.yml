@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocrapp
+spec:
+  selector:
+    matchLabels:
+      app: ocrapp
+  template:
+    metadata:
+      labels:
+        app: ocrapp
+    spec:
+      containers:
+        - name: ocrapp
+          image: localhost:5000/your-image-name
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort:  

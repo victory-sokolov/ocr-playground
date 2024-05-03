@@ -1,5 +1,20 @@
 services:
 
+  appocr:
+    container_name: appocr
+    restart: on-failure:5
+    build:
+      context: ./
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app
+    networks:
+      - ocr-network
+    depends_on:
+      - postgres-db
+      - redis
+
   redis:
     restart: on-failure
     container_name: redis-ocr
@@ -9,6 +24,8 @@ services:
       - no-new-privileges:true
     ports:
       - 6389:6389
+    networks:
+      - ocr-network
     command: redis-server --loglevel warning
     # Run as privileged to allow the container to change the vm.overcommit_memory setting
     privileged: true
@@ -26,23 +43,21 @@ services:
     ports:
       - "8082:443"
 
-  postgres:
+  postgres-db:
     restart: on-failure
     container_name: postgresql-ocr
     build:
       context: docker/postgres
-    security_opt:
-      - no-new-privileges:true
     env_file:
       - .env
     ports:
-      - "5431:5431"
-    expose:
-      - "5431"
+      - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - ocr-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -h $$DB_HOST -p $$PGPORT -U $$POSTGRES_USER"]
+      test: ["CMD-SHELL", "pg_isready -h ${POSTGRES_HOST} -p ${PGPORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -73,5 +88,5 @@ volumes:
   pg_data:
 
 networks:
-  custom:
+  ocr-network:
     driver: bridge

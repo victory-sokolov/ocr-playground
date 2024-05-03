@@ -4,6 +4,5 @@ Dockerfile
 .github
 data/
 docker
-.env
 .venv
 .pre-commit-config.yaml
