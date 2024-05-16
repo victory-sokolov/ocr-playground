@@ -129,10 +129,10 @@ dmypy.json
 .pyre/
 
 # Custom
-app/static/processed
-app/static/docs
-app/static/*.zip
-app/static/temp*
+ocr-app/static/processed
+ocr-app/static/docs
+ocr-app/static/*.zip
+ocr-app/static/temp*
 data/
 certs/
 .vscode/*
