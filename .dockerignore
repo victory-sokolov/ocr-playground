@@ -5,4 +5,5 @@ Dockerfile
 data/
 docker
 .venv
+venv
 .pre-commit-config.yaml
