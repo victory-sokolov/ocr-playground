@@ -1,6 +1,9 @@
 default: help
 
+PYTHON_VERSION_FILE := .python-version
+
 install: ## Install dependencies
+	poetry env use $(shell cat $(PYTHON_VERSION_FILE))
 	poetry install --no-root
 
 test: # Run tests

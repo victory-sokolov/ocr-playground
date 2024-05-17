@@ -35,6 +35,7 @@ RUN apt-get update && apt-get install --no-install-recommends --fix-missing -y \
     libicu-dev \
     libcairo2-dev \
     tesseract-ocr-eng \
+    tesseract-ocr-lav \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -45,10 +46,9 @@ COPY poetry.lock pyproject.toml ./
 RUN poetry install --only main --no-ansi --no-interaction
 
 # Move traineddata files to $TESSDATA
-COPY app/traineddata/ $TESSDATA_PREFIX
+COPY traineddata/ $TESSDATA_PREFIX
 COPY . .
 
 EXPOSE 8002
 
-# CMD poetry run alembic upgrade head && poetry run python main.py --log-level info
-CMD ["sh"]
+CMD poetry run alembic upgrade head && poetry run python main.py --log-level info
