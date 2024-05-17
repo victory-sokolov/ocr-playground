@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
 from uuid import UUID
 
-from fastapi import HTTPException
-from sqlalchemy import insert, select
-
 from core.db.session import get_db
+from fastapi import HTTPException
 from models.base import Base
+from sqlalchemy import insert, select
 
 
 class AbstractRepository(ABC):

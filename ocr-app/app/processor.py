@@ -6,10 +6,9 @@ import cv2
 import imutils
 import numpy as np
 from loguru import logger
+from recognizers import Recognizer
 from redis import Redis
 from rq import Queue
-
-from recognizers import Recognizer
 from transform import four_point_transform
 
 

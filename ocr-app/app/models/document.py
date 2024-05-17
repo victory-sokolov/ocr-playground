@@ -1,7 +1,6 @@
-from sqlalchemy.orm import Mapped, mapped_column
-
 from models.base import Base
 from schemas.document import DocumentSchema
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class Document(Base):
