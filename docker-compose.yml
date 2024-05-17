@@ -2,13 +2,14 @@ services:
 
   appocr:
     container_name: appocr
-    restart: on-failure
+    restart: unless-stopped
+    tty: true
     build:
       context: ./ocr-app
+    env_file:
+      - .env
     ports:
       - "8000:8000"
-    volumes:
-      - ./ocr-app/:/app
     networks:
       - ocr-network
     healthcheck:
@@ -45,7 +46,7 @@ services:
     build:
       context: docker/nginx
     volumes:
-      - ../ocr-app/certs:/etc/nginx/certs
+      - ./ocr-app/app/certs:/etc/nginx/certs
     ports:
       - "8082:443"
 

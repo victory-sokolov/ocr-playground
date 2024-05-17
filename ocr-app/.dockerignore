@@ -5,5 +5,11 @@ Dockerfile
 data/
 docker
 .venv
-venv
+app/__pycache__/
+app.egg-info
+*.pyc
+.mypy_cache
+.coverage
+.coveragerc
+htmlcov
 .pre-commit-config.yaml

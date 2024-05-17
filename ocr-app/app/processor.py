@@ -9,8 +9,8 @@ from loguru import logger
 from redis import Redis
 from rq import Queue
 
-from app.recognizers import Recognizer
-from app.transform import four_point_transform
+from recognizers import Recognizer
+from transform import four_point_transform
 
 
 class Processor:
@@ -32,12 +32,12 @@ class Processor:
         # Save resized image
         img_id = str(uuid1())
         img_name = f"{img_id}.jpg"
-        img_path = f"app/static/processed/{img_name}"
+        img_path = f"static/processed/{img_name}"
         # TODO: Use TempFile module to store image and remove it
         cv2.imwrite(img_path, img)
 
         # temporary processed image to used by OCR engine
-        processed_img = f"app/static/processed/temp-{img_id}.jpg"
+        processed_img = f"static/processed/temp-{img_id}.jpg"
         cv2.imwrite(processed_img, thresh)
 
         recognition_result = self.recognizer.recognize(processed_img)
@@ -47,7 +47,7 @@ class Processor:
         return recognition_result
 
     def _load_image(self, img_name: str):
-        path = f"app/static/{img_name}"
+        path = f"static/{img_name}"
         img = cv2.imread(path)
 
         if img is None:

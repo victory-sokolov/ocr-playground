@@ -14,41 +14,42 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=250 \
-    POETRY_VIRTUALENVS_IN_PROJECT=true \
-    POETRY_NO_INTERACTION=1 \
+    PIP_DEFAULT_TIMEOUT=100 \
     POETRY_VERSION=${POETRY_VERSION} \
-    POETRY_HOME="/home/poetry" \
-    PYSETUP_PATH="/home/pysetup" \
     TESSDATA_PREFIX="/usr/share/tesseract-ocr/5.00/tessdata"
 
-ENV PATH="$POETRY_HOME/bin:$PATH"
+# RUN apt-get update && apt-get install libgl1 libgl1-mesa-glx -y --fix-missing 
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* \
+    && apt-get update && apt-get install -y --fix-missing \
+    libgl1-mesa-glx \
+    libgl1 
 
-RUN apt-get update && apt-get install --no-install-recommends --fix-missing -y \
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \ 
+    apt-get update && apt-get install -y --no-install-recommends --fix-missing \
     build-essential \
     pkg-config \
     liblept5 \
     libtesseract-dev \
     libleptonica-dev \
-    tesseract-ocr \
     libtool \
     libicu-dev \
     libcairo2-dev \
+    tesseract-ocr \
     tesseract-ocr-eng \
-    tesseract-ocr-lav \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    tesseract-ocr-lav
 
-RUN curl -sSL https://install.python-poetry.org | python3 -
+RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python && \
+    cd /usr/local/bin && \
+    ln -s /opt/poetry/bin/poetry && \
+    poetry config virtualenvs.create false
 
 # Install packages
 COPY poetry.lock pyproject.toml ./
-RUN poetry install --only main --no-ansi --no-interaction
+RUN poetry install --only main --no-ansi --no-interaction --no-root
 
 # Move traineddata files to $TESSDATA
 COPY traineddata/ $TESSDATA_PREFIX
-COPY . .
+COPY ./app .
 
 EXPOSE 8002
-
-CMD poetry run alembic upgrade head && poetry run python main.py --log-level info

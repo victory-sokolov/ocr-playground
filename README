@@ -11,6 +11,7 @@ Image preprocessing is being done using OpenCV
 ## Start dev
 
 ```shell
+cd ocr-app/app
 make dev
 ```
 

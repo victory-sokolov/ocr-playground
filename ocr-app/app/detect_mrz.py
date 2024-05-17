@@ -12,7 +12,7 @@ def get_mrz(images):
         images = list(images)
 
     for index, img in enumerate(images):
-        imagePath = f"app/static/{img}"
+        imagePath = f"static/{img}"
         # loop over the input image paths
         # for imagePath in paths.list_images(args["images"]):
         # load the image, resize it, and convert it to grayscale
@@ -86,7 +86,7 @@ def get_mrz(images):
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 break
 
-        cv2.imwrite(f"app/static/mrz_{index}.jpg", roi)
+        cv2.imwrite(f"static/mrz_{index}.jpg", roi)
         regions.append(roi)
 
     return regions

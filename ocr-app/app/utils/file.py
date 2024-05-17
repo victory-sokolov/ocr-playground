@@ -9,7 +9,7 @@ from loguru import logger
 
 def save_file(file: UploadFile) -> None:
     file_name = file.filename
-    with open(os.path.join("./app/static", file_name), "wb") as file_object:
+    with open(os.path.join("./static", file_name), "wb") as file_object:
         logger.info(f"Storing file {file_name}")
         shutil.copyfileobj(file.file, file_object)
 
@@ -18,8 +18,8 @@ def unarchive_files(f_name: str) -> list[str]:
     logger.info("Archiving files...")
     folder = f"{f_name.split('.')[0]}/"
     # file path where to extract archive images
-    file_path = f"app/static/{folder}"
-    shutil.unpack_archive(f"{getcwd()}/app/static/{f_name}", file_path)
+    file_path = f"static/{folder}"
+    shutil.unpack_archive(f"{getcwd()}/static/{f_name}", file_path)
     files = [folder + f for f in listdir(file_path) if isfile(join(file_path, f))]
     return files
 

@@ -1,7 +1,7 @@
-from app.api.extract.schemas import OcrRequest
-from app.containers import RecognitionContainer
-from app.repositories.document import DocumentRepository
-from app.schemas.document import DocumentSchema
+from api.extract.schemas import OcrRequest
+from containers import RecognitionContainer
+from repositories.document import DocumentRepository
+from schemas.document import DocumentSchema
 
 
 class DocumentService:

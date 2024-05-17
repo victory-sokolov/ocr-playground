@@ -1,5 +1,5 @@
-from app.repositories.document import DocumentRepository
-from app.services.document import DocumentService
+from repositories.document import DocumentRepository
+from services.document import DocumentService
 
 
 def document_service():

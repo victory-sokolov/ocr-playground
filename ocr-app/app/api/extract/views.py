@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends, Response, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from app.api.dependencies import document_service
-from app.api.extract.schemas import OcrRequest, OcrResponse
-from app.services.document import DocumentService
+from api.dependencies import document_service
+from api.extract.schemas import OcrRequest, OcrResponse
+from services.document import DocumentService
 
 router = APIRouter(tags=["Optical Character Recognition"])
 

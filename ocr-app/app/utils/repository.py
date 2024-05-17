@@ -4,8 +4,8 @@ from uuid import UUID
 from fastapi import HTTPException
 from sqlalchemy import insert, select
 
-from app.core.db.session import get_db
-from app.models.base import Base
+from core.db.session import get_db
+from models.base import Base
 
 
 class AbstractRepository(ABC):

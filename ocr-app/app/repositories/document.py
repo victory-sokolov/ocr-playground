@@ -1,6 +1,6 @@
-from app.models.document import Document
-from app.schemas.document import DocumentSchema
-from app.utils.repository import SQLAlchemyRepository
+from models.document import Document
+from schemas.document import DocumentSchema
+from utils.repository import SQLAlchemyRepository
 
 
 class DocumentRepository(SQLAlchemyRepository):

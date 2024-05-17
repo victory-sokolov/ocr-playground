@@ -1,11 +1,11 @@
 import os
 import secrets
-from pathlib import Path
 from typing import List
 
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
 
-env_location = Path("../.env").resolve()
+load_dotenv()
 
 
 class Settings(BaseSettings):
@@ -42,10 +42,10 @@ class Settings(BaseSettings):
     ]
     OCR_ENGINE: str = ""
 
-    class Config:
-        env_file = env_location
-        extra = "ignore"
-        env_ignore_empty = True
+    # class Config:
+    #     env_file = env_location
+    #     extra = "ignore"
+    #     env_ignore_empty = True
 
     @staticmethod
     def init_app(app):

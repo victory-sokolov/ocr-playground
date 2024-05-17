@@ -1,9 +1,8 @@
 import uuid
 from uuid import UUID
 
+from core.db.mixins import TimestampMixin
 from sqlalchemy.orm import DeclarativeBase, Mapped, declared_attr, mapped_column
-
-from app.core.db.mixins import TimestampMixin
 
 
 class Base(DeclarativeBase, TimestampMixin):

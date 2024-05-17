@@ -3,7 +3,7 @@ from contextvars import ContextVar
 from enum import Enum
 from typing import AsyncIterator
 
-from app.core.config import config
+from core.config import config
 from sqlalchemy import Delete, Insert, Update
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,

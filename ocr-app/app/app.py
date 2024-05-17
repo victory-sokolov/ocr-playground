@@ -1,16 +1,15 @@
+from api import router as extract_views
+from containers import RecognitionContainer
+from core.config import config
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile, status
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from loguru import logger
-
-from app.api import router as extract_views
-from app.containers import RecognitionContainer
-from app.core.config import config
-from app.utils.file import is_archive_file, save_file, unarchive_files
+from utils.file import is_archive_file, save_file, unarchive_files
 
 app = FastAPI(title=config.APP_NAME, debug=config.DEBUG)
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(router=extract_views, prefix="/api/v1")
 
