@@ -18,12 +18,6 @@ ENV DEBIAN_FRONTEND=noninteractive \
     POETRY_VERSION=${POETRY_VERSION} \
     TESSDATA_PREFIX="/usr/share/tesseract-ocr/5.00/tessdata"
 
-# RUN apt-get update && apt-get install libgl1 libgl1-mesa-glx -y --fix-missing
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* \
-    && apt-get update && apt-get install -y --fix-missing \
-    libgl1-mesa-glx \
-    libgl1
-
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get update && apt-get install -y --no-install-recommends --fix-missing \
@@ -55,3 +49,4 @@ COPY ./app .
 EXPOSE 8002
 
 CMD poetry run alembic upgrade head && poetry run python main.py --log-level info
+
