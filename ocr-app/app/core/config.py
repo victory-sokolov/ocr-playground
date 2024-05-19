@@ -1,11 +1,14 @@
 import os
 import secrets
+from pathlib import Path
 from typing import List
 
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
 
-load_dotenv()
+current_dir = os.getcwd()
+dotenv_path = Path(current_dir).parent.parent
+load_dotenv(f"{dotenv_path}/.env.local")
 
 
 class Settings(BaseSettings):
