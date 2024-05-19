@@ -1,7 +1,7 @@
 services:
 
   appocr:
-    container_name: appocr
+    container_name: ocrapp
     restart: unless-stopped
     tty: true
     build:
@@ -13,7 +13,7 @@ services:
     networks:
       - ocr-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "https://127.0.0.1:8082/api/health"]
+      test: ["CMD", "curl", "-f", "https://127.0.0.1:8082/api/v1/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -41,14 +41,18 @@ services:
       - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
 
   nginx:
-    restart: on-failure
+    image: jonasal/nginx-certbot:latest
+    restart: unless-stopped
     container_name: nginx-ocr
-    build:
-      context: docker/nginx
-    volumes:
-      - ./ocr-app/app/certs:/etc/nginx/certs
+    environment:
+      - CERTBOT_EMAIL
+    env_file:
+      - ./docker/nginx/nginx.env
     ports:
-      - "8082:443"
+      - 80:80
+      - 443:443
+    volumes:
+      - nginx_secrets:/etc/letsencrypt
 
   postgres-db:
     restart: on-failure
@@ -64,7 +68,7 @@ services:
     networks:
       - ocr-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -h ${POSTGRES_HOST} -p ${PGPORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -p ${PGPORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -93,6 +97,7 @@ services:
 
 volumes:
   pg_data:
+  nginx_secrets:
 
 networks:
   ocr-network:
