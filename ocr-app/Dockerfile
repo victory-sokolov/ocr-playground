@@ -53,3 +53,5 @@ COPY traineddata/ $TESSDATA_PREFIX
 COPY ./app .
 
 EXPOSE 8002
+
+CMD poetry run alembic upgrade head && poetry run python main.py --log-level info

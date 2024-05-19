@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: ocrapp
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: ocrapp
@@ -13,10 +14,27 @@ spec:
     spec:
       containers:
         - name: ocrapp
-          image: localhost:5000/your-image-name
+          image: localhost:5000/ocrapp
+          imagePullPolicy: Never
           resources:
             limits:
               memory: "128Mi"
               cpu: "500m"
           ports:
-            - containerPort:  
+            - containerPort: 8002
+              protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ocr-app-svc
+spec:
+  type: NodePort
+  selector:
+    app: ocr-app
+  ports:
+    - name: ocrapp-ports
+      protocol: TCP
+      port: 80
+      targetPort: 8002
