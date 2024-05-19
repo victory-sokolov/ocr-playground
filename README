@@ -19,7 +19,7 @@ make dev
 ```bash
 brew install mkcert
 
-mkdir certs && cd certs
+mkdir ocr-app/app/certs && cd ocr-app/app/certs
 mkcert localhost 127.0.0.1 ::1
 ```
 
@@ -33,10 +33,12 @@ Run app inside Docker
 docker run -p 8000:8000 -it --rm ocr-app
 ```
 
-Run with Kubernetes
+Run with Kubernetes:
 
-1. Build Docker image: `docker build -t ocr-app ./ocr-app`
-2. Tag the image: `docker tag ocr-app localhost:5000/ocr-app`
-3. Start local Docker registry: `docker run -d -p 5000:5000 --restart=always --name registry registry:2`
-4. Push image to local registry: `docker push localhost:5000/ocr-app`
-5. Apply the Kubernetes deployment config: `kubectl apply -f deployment.yaml`
+1. Start minikube: `minikube start`
+2. Configure your shell to use the Docker daemon inside your Minikube virtual machine `minikube docker-env`
+3. Run `eval $(minikube -p minikube docker-env)`
+4. Build Docker image: `docker build ./ocr-app -t localhost:5000/ocrapp --rm`
+5. Start local Docker registry: `docker run -d -p 5000:5000 --restart=always --name registry registry:2`
+6. Push image to local registry: `docker push localhost:5000/ocrapp`
+7. Apply the Kubernetes deployment config: `kubectl apply -f deployment.yml`
