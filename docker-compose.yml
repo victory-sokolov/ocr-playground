@@ -89,7 +89,7 @@ services:
     depends_on:
       - prometheus
     ports:
-      - 3000:3000
+      - 3010:3010
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
     env_file:
