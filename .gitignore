@@ -136,3 +136,6 @@ ocr-app/static/temp*
 data/
 certs/
 .vscode/*
+
+# Local .terraform directories
+**/.terraform/*
