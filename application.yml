@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoUrl: https://github.com/victory-sokolov/ocr-playground
+    targetRevision: HEAD
+    path: .
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ocrapp
+
+  syncPolicy:
+    syncOptions:
+      - CreateNameSpace=true
+
+    automated:
+      selfHeal: true
+      prune: true
