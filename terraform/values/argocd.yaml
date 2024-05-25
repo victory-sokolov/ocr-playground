@@ -1,6 +1,6 @@
 global:
   image:
-    tag: "v2.6.6"
+    tag: "v2.11.1"
 
 server:
   extraArgs:
