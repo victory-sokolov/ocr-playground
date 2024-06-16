@@ -2,12 +2,12 @@ global:
   scrape_interval: 15s
 
 scrape_configs:
-  - job_name: "prometheus"
+  - job_name: 'prometheus'
     scrape_interval: 15s
     metrics_path: /prometheus/metrics
     static_configs:
-      - targets: ["localhost:9090"]
-  - job_name: "app"
+      - targets: ['localhost:9090']
+  - job_name: 'app'
     scrape_interval: 5s
     static_configs:
-      - targets: ["app:8000"]
+      - targets: ['appocr:8000']
