@@ -5,7 +5,7 @@ ARG PYTHON_VERSION=${PYTHON_VERSION:-$(cat .python-version)}
 ARG POETRY_VERSION="1.8.3"
 
 # Use specified Python version or default version
-FROM python:${PYTHON_VERSION:-${DEFAULT_PYTHON_VERSION}}-bullseye AS base
+FROM python:${PYTHON_VERSION:-${DEFAULT_PYTHON_VERSION}}-bookworm AS base
 
 WORKDIR /ocr
 
@@ -15,7 +15,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=${POETRY_VERSION}
+    POETRY_VERSION=${POETRY_VERSION} \
+    TZ=UTC
+
 
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
@@ -36,7 +38,7 @@ RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python
 COPY poetry.lock pyproject.toml ./
 RUN poetry install --only main --no-ansi --no-interaction --no-root
 
-FROM python:${PYTHON_VERSION:-${DEFAULT_PYTHON_VERSION}}-bullseye AS builder
+FROM base AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TESSDATA_PREFIX="/usr/share/tesseract-ocr/5.00/tessdata"
@@ -52,6 +54,7 @@ RUN apt-get clean && \
     tesseract-ocr-lav
 
 # Move traineddata files to $TESSDATA
+ARG CACHE_BUST=1
 COPY traineddata/ $TESSDATA_PREFIX
 COPY ./app .
 
