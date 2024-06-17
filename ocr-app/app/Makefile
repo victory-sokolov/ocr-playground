@@ -31,4 +31,7 @@ help: # Show help for each of the Makefile recipes.
 down: ## docker compose down
 	docker-compose down --volumes --remove-orphans
 
+build: ## Build without cache for COPY command
+	docker build --no-cache --build-arg CACHE_BUST=$(date +%s) -t ocrapp .
+
 .DEFAULT_GOAL := help
