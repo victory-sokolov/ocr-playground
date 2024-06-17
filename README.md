@@ -16,6 +16,7 @@ make dev
 ```
 
 ## Generate SSL certificate to run server over https
+
 ```bash
 brew install mkcert
 
@@ -43,6 +44,14 @@ Run with Kubernetes:
 6. Push image to local registry: `docker push localhost:5000/ocrapp`
 7. Apply the Kubernetes deployment config: `kubectl apply -f deployment.yml`
 
+## Terraform
+
+```bash
+cd terraform
+terraform init
+terraform apply
+helm list -A # Verfiy installation
+```
 
 ## ArgoCD
 
@@ -50,3 +59,4 @@ Run with Kubernetes:
 - To retrieve a password
   - `kubectl get secrets argocd-initial-admin-secret -o yaml -n argocd`
   - `echo "copied_password_here" | base64 -d`
+  - `kubectl port-forward svc/argocd-server -n argocd 8080:80`
