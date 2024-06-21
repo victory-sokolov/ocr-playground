@@ -9,11 +9,15 @@ install: ## Install dependencies
 test: # Run tests
 	poetry run python -m unittest discover app/tests
 
+worker: ## Run Celery worker
+	poetry run celery -A worker.app worker --loglevel=info
+
 dev: # Run dev server
 	poetry run python main.py
 
 prod: # Run prod server
-	poetry run python main.py --log-level info
+	# poetry run python main.py --log-level info
+	poetry run gunicorn app:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:80
 
 upgrade-deps: # Upgrade poetry dependencies
 	poetry up --latest
