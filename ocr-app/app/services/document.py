@@ -11,6 +11,6 @@ class DocumentService:
     async def create_document(self, data: OcrRequest) -> DocumentSchema:
         processor = RecognitionContainer.processor()
         ocr_data = processor.process(data.image_data)
-        content = {"raw_data": ocr_data}
+        content = {"raw_data": ocr_data["text"]}
         response = await self.repository.get_document_data(content)
         return response

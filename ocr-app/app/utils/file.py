@@ -9,8 +9,9 @@ from loguru import logger
 
 def save_file(file: UploadFile) -> None:
     file_name = file.filename
-    with open(os.path.join("./static", file_name), "wb") as file_object:
-        logger.info(f"Storing file {file_name}")
+    path = os.path.join("./static", file_name)
+    with open(path, "wb") as file_object:
+        logger.info(f"Storing file at {path}")
         shutil.copyfileobj(file.file, file_object)
 
 

@@ -3,20 +3,20 @@ from typing import Union
 from uuid import uuid1
 
 import cv2
-import imutils
 import numpy as np
 from loguru import logger
 from recognizers import Recognizer
 from redis import Redis
 from rq import Queue
 from transform import four_point_transform
+from utils.image_utils import grab_contours, resize
 
 
 class Processor:
     def __init__(self, recognizer: Recognizer) -> None:
         self.recognizer = recognizer
 
-    def pre_process(self, img) -> str:
+    def pre_process(self, img) -> dict:
         # img_cut = self.image_contours(img)
         img = cv2.resize(img, None, fx=1.2, fy=1.2, interpolation=cv2.INTER_CUBIC)
         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -36,14 +36,14 @@ class Processor:
         cv2.imwrite(img_path, img)
 
         # temporary processed image to used by OCR engine
-        processed_img = f"static/processed/temp-{img_id}.jpg"
+        processed_img = f"static/processed/temp-{img_name}"
         cv2.imwrite(processed_img, thresh)
 
         recognition_result = self.recognizer.recognize(processed_img)
         # remove temp image
         os.remove(processed_img)
 
-        return recognition_result
+        return {"text": recognition_result, "image": img_name}
 
     def _load_image(self, img_name: str):
         path = f"static/{img_name}"
@@ -62,17 +62,17 @@ class Processor:
 
             img = self._load_image(image)
             recognition_result = self.pre_process(img)
-            recognized_data.append({"text": recognition_result})
+            recognized_data.append({"text": recognition_result, "image": image})
 
         return recognized_data
 
-    def process_image_bytes(self, file: bytes) -> str:
+    def process_image_bytes(self, file: bytes) -> dict:
         nparr = np.fromstring(file, np.uint8)
         img_np = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         data = self.pre_process(img_np)
         return data
 
-    def process(self, files: Union[list, str, bytes]) -> str:
+    def process(self, files: Union[list, str, bytes]) -> dict:
         if isinstance(files, list):
             self.process_list_of_images(files)
         elif isinstance(files, bytes):
@@ -86,7 +86,7 @@ class Processor:
     def image_contours(self, image):
         ratio = image.shape[0] / 500.0
         orig = image.copy()
-        image = imutils.resize(image, height=500)
+        image = resize(image, height=500)
 
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         gray = cv2.GaussianBlur(gray, (3, 3), 0)
@@ -95,7 +95,7 @@ class Processor:
         # find the contours in the edged image, keeping only the
         # largest ones, and initialize the screen contour
         cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-        cnts = imutils.grab_contours(cnts)
+        cnts = grab_contours(cnts)
         cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:5]
 
         for cnt in cnts:

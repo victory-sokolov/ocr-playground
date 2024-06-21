@@ -1,6 +1,6 @@
 import cv2
-import imutils
 import numpy as np
+from utils.image_utils import grab_contours, resize
 
 
 def get_mrz(images):
@@ -17,7 +17,7 @@ def get_mrz(images):
         # for imagePath in paths.list_images(args["images"]):
         # load the image, resize it, and convert it to grayscale
         image = cv2.imread(imagePath)
-        image = imutils.resize(image, height=600)
+        image = resize(image, height=600)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
         # smooth the image using a 3x3 Gaussian, then apply the blackhat
@@ -57,7 +57,7 @@ def get_mrz(images):
             cv2.RETR_EXTERNAL,
             cv2.CHAIN_APPROX_SIMPLE,
         )
-        cnts = imutils.grab_contours(cnts)
+        cnts = grab_contours(cnts)
         cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
         roi = image
         # loop over the contours

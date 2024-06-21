@@ -6,6 +6,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from loguru import logger
+from prometheus_fastapi_instrumentator import Instrumentator
 from utils.file import is_archive_file, save_file, unarchive_files
 
 app = FastAPI(title=config.APP_NAME, debug=config.DEBUG)
@@ -13,7 +14,14 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(router=extract_views, prefix="/api/v1")
 
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory="templates")
+
+instrumentator = Instrumentator().instrument(app)
+
+
+@app.on_event("startup")
+async def _startup():
+    instrumentator.expose(app)
 
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
@@ -43,7 +51,7 @@ async def upload_image(request: Request, file: UploadFile = File(...)):
         ocr = processor.process(f_name)
         return templates.TemplateResponse(
             "result.html",
-            {"request": request, "data": ocr},
+            {"request": request, "data": [ocr]},
         )
 
     files = unarchive_files(f_name)
