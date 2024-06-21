@@ -12,6 +12,9 @@ test: # Run tests
 worker: ## Run Celery worker
 	poetry run celery -A worker.app worker --loglevel=info
 
+flower: ## Web UI for Celery (runs on port :5555)
+	poetry run celery -A worker.app flower
+
 dev: # Run dev server
 	poetry run python main.py
 
