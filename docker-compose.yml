@@ -30,10 +30,9 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - 6389:6389
+      - 6389:6379
     networks:
       - ocr-network
-    command: redis-server --loglevel warning
     # Run as privileged to allow the container to change the vm.overcommit_memory setting
     privileged: true
     volumes:
