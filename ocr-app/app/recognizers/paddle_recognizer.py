@@ -1,5 +1,10 @@
 from loguru import logger
-from paddleocr import PaddleOCR
+
+try:
+    from paddleocr import PaddleOCR
+except ImportError:
+    # Skipping inside Docker
+    pass
 
 from .recognizer import Recognizer
 
