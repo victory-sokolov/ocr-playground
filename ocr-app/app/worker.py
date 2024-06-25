@@ -1,11 +1,43 @@
-import os
+import logging
+from time import time
 
 from celery import Celery
+from celery.signals import task_postrun, task_prerun
+from core.config import CeleryConfig
+
+logger = logging.getLogger(__name__)
+
 
 app = Celery("ocrapp")
+app.config_from_object(CeleryConfig)
+
+app.autodiscover_tasks()
+
+# Measure celery task execution time
+# Ref: https://stackoverflow.com/questions/19481470/measuring-celery-task-execution-time
+d = {}
 
 
-app.conf.broker_url = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6389")
-app.conf.result_backend = os.environ.get(
-    "CELERY_RESULT_BACKEND", "redis://localhost:6389",
-)
+@task_prerun.connect
+def task_prerun_handler(signal, sender, task_id, task, args, kwargs, **extras):
+    d[task_id] = time()
+
+
+@task_postrun.connect
+def task_postrun_handler(
+    signal,
+    sender,
+    task_id,
+    task,
+    args,
+    kwargs,
+    retval,
+    state,
+    **extras,
+):
+    try:
+        cost = time() - d.pop(task_id)
+    except KeyError:
+        cost = -1
+
+    logger.info(f"Task {task.__name__} took {cost}")
