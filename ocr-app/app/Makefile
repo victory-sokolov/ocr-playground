@@ -2,17 +2,20 @@ default: help
 
 PYTHON_VERSION_FILE := .python-version
 
-install: ## Install dependencies
+install: # Install dependencies
 	poetry env use $(shell cat $(PYTHON_VERSION_FILE))
 	poetry install --no-root
 
 test: # Run tests
 	poetry run python -m unittest discover app/tests
 
-worker: ## Run Celery worker
+worker: # Run Celery worker
 	poetry run celery -A worker.app worker --loglevel=info
 
-flower: ## Web UI for Celery (runs on port :5555)
+worker-dev: # Run Celery worker in dev environment
+	watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery worker --app=worker.app --concurrency=1 --loglevel=INFO
+
+flower: # Web UI for Celery (runs on port :5555)
 	poetry run celery -A worker.app flower
 
 dev: # Run dev server
@@ -32,13 +35,13 @@ migrate: # Create migration
 	poetry run alembic revision --autogenerate -m "$(filter-out $@,$(MAKECMDGOALS))"
 	poetry run alembic upgrade head
 
-help: # Show help for each of the Makefile recipes.
-	@grep -E '^[a-zA-Z0-9 -]+:.*#'  Makefile | sort | while read -r l; do printf "\033[1;32m$$(echo $$l | cut -f 1 -d':')\033[00m:$$(echo $$l | cut -f 2- -d'#')\n"; done
-
-down: ## docker compose down
+down: # docker compose down
 	docker-compose down --volumes --remove-orphans
 
-build: ## Build without cache for COPY command
+build: # Build without cache for COPY command
 	docker build --no-cache --build-arg CACHE_BUST=$(date +%s) -t ocrapp .
+
+help: # Show help for each of the Makefile recipes.
+	@grep -E '^[a-zA-Z0-9 -]+:.*#'  Makefile | sort | while read -r l; do printf "\033[1;32m$$(echo $$l | cut -f 1 -d':')\033[00m:$$(echo $$l | cut -f 2- -d'#')\n"; done
 
 .DEFAULT_GOAL := help
