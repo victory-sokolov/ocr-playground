@@ -6,10 +6,12 @@ services:
     tty: true
     build:
       context: ./ocr-app
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-false}
     env_file:
       - .env
     ports:
-      - "8000:8000"
+      - "8082:8082"
     networks:
       - ocr-network
     healthcheck:
@@ -18,9 +20,12 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    platform: linux/amd64 # Patch for M1 Mac
     depends_on:
-      - postgres-db
-      - redis
+      redis:
+        condition: service_started
+      postgres-db:
+        condition: service_healthy
 
   redis:
     restart: on-failure
@@ -72,6 +77,12 @@ services:
       timeout: 5s
       retries: 3
 
+  # flower:
+  #   image: mher/flower
+  #   command: ["flower", "--broker=redis://redis-ocr:6379/0", "--port=8888"]
+  #   ports:
+  #     - 8888:8888
+
   prometheus:
     image: prom/prometheus:latest
     restart: unless-stopped
@@ -89,12 +100,13 @@ services:
     depends_on:
       - prometheus
     ports:
-      - 3010:3010
+      - 3010:3000
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
-      - grafana_data:/var/lib/grafana
-    env_file:
-      - ./grafana/config.monitoring
+      - ./grafana:/var/lib/grafana
 
 
 volumes:

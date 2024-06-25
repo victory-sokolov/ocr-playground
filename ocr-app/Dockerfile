@@ -19,15 +19,20 @@ ENV DEBIAN_FRONTEND=noninteractive \
     TZ=UTC
 
 
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get update && apt-get install -y --no-install-recommends --fix-missing \
+RUN rm -rf /var/lib/apt/lists/*
+RUN echo "Acquire::http::Pipeline-Depth 0;" > /etc/apt/apt.conf.d/99custom && \
+    echo "Acquire::http::No-Cache true;" >> /etc/apt/apt.conf.d/99custom && \
+    echo "Acquire::BrokenProxy    true;" >> /etc/apt/apt.conf.d/99custom
+
+RUN apt-get clean \
+    && apt-get update && apt-get upgrade -y \
+    && apt-get install -y --fix-missing \
     build-essential \
+    curl \
     pkg-config \
     libtool \
     libicu-dev \
     libcairo2-dev
-
 
 RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python && \
     cd /usr/local/bin && \
@@ -35,8 +40,9 @@ RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python
     poetry config virtualenvs.create false
 
 # Install packages
+ARG INSTALL_DEV=false
 COPY poetry.lock pyproject.toml ./
-RUN poetry install --only main --no-ansi --no-interaction --no-root
+RUN bash -c "if [$INSTALL_DEV == 'true']; then poetry install --no-root ; else poetry install --no-root --only main; fi"
 
 FROM base AS builder
 
@@ -60,4 +66,4 @@ COPY ./app .
 
 EXPOSE 8002
 
-CMD poetry run alembic upgrade head && poetry run python main.py --log-level info
+CMD poetry run alembic upgrade head && poetry run python main.py --log-level debug

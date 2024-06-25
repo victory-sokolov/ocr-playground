@@ -5,7 +5,8 @@ Dockerfile
 data/
 docker
 .venv
-app/__pycache__/
+ocr-app/__pycache__/
+ocr-app/app/tests/
 app.egg-info
 *.pyc
 .mypy_cache
