@@ -13,7 +13,7 @@ worker: # Run Celery worker
 	poetry run celery -A worker.app worker --loglevel=info
 
 worker-dev: # Run Celery worker in dev environment
-	watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery worker --app=worker.app --concurrency=1 --loglevel=INFO
+	poetry run watchmedo auto-restart --directory=./ --patterns="*.py" --recursive --command='sh -c "celery -A worker.app worker --loglevel=INFO"'
 
 flower: # Web UI for Celery (runs on port :5555)
 	poetry run celery -A worker.app flower
