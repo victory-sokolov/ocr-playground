@@ -44,6 +44,16 @@ services:
       - ./data/redis:/data
       - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
 
+  rabbitmq:
+    image: "bitnami/rabbitmq:3.12.14"
+    ports:
+      - "4369:4369"
+      - "5672:5672"
+      - "25672:25672"
+      - "15672:15672"
+    volumes:
+      - "rabbitmq_data:/bitnami"
+
   nginx:
     image: jonasal/nginx-certbot:latest
     restart: unless-stopped
@@ -77,11 +87,16 @@ services:
       timeout: 5s
       retries: 3
 
-  # flower:
-  #   image: mher/flower
-  #   command: ["flower", "--broker=redis://redis-ocr:6379/0", "--port=8888"]
-  #   ports:
-  #     - 8888:8888
+  flower:
+    image: mher/flower
+    container_name: flower
+    environment:
+      - FLOWER_BASIC_AUTH=user:test
+    ports:
+      - 5555:5555
+    depends_on:
+      - rabbitmq
+      - redis
 
   prometheus:
     image: prom/prometheus:latest
@@ -114,6 +129,7 @@ volumes:
   nginx_secrets:
   grafana_data:
   prometheus_data:
+  rabbitmq_data:
 
 
 networks:
