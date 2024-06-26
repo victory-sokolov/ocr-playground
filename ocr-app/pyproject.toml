@@ -30,7 +30,6 @@ pydantic-settings = "^2.1.0"
 sqlalchemy = {extras = ["asyncio"], version = "^2.0.25"}
 celery = "^5.4.0"
 gunicorn = "^22.0.0"
-rq = "^1.16.1"
 alembic = "^1.13.1"
 prometheus-fastapi-instrumentator = "^7.0.0"
 flower = "^2.0.1"
@@ -69,6 +68,7 @@ black = "^24.1.1"
 isort = "^5.13.2"
 mypy = "^1.8.0"
 flake8 = "^7.0.0"
+watchdog = {extras = ["watchmedo"], version = "^4.0.1"}
 
 [tool.poetry.group.extras.dependencies]
 paddleocr = "^2.7.3"

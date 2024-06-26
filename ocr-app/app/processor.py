@@ -6,8 +6,6 @@ import cv2
 import numpy as np
 from loguru import logger
 from recognizers import Recognizer
-from redis import Redis
-from rq import Queue
 from transform import four_point_transform
 from utils.image_utils import grab_contours, resize
 
@@ -111,8 +109,3 @@ class Processor:
         cv2.drawContours(image, [screen_cnt], -1, (0, 255, 0), 2)
         warped = four_point_transform(orig, screen_cnt.reshape(4, 2) * ratio)
         return warped
-
-    def recognition_queue(self, images):
-        queue = Queue(connection=Redis())
-        queue.empty()
-        queue.enqueue(self.process, args=[images])
