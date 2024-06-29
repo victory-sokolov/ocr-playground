@@ -4,9 +4,20 @@ from time import time
 from celery import Celery
 from celery.signals import task_postrun, task_prerun
 from core.config import CeleryConfig
+from kombu.serialization import register
 
 logger = logging.getLogger(__name__)
 
+import pydantic_serializer
+
+# Register new serializer methods into kombu
+register(
+    "pydantic",
+    pydantic_serializer.pydantic_dumps,
+    pydantic_serializer.pydantic_loads,
+    content_type="application/x-pydantic",
+    content_encoding="utf-8",
+)
 
 app = Celery("ocrapp")
 app.config_from_object(CeleryConfig)
