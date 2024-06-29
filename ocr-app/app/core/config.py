@@ -75,20 +75,22 @@ class ProductionConfig(Settings):
 class CeleryConfig:
     enable_utc = True
     timezone = "Europe/Kiev"
-    task_serializer = "json"
-    result_serializer = "json"
+    task_serializer = "pydantic"
+    result_serializer = "pydantic"
+    event_serializer = "pydantic"
     result_backend = os.environ.get(
         "CELERY_RESULT_BACKEND",
         "redis://localhost:6389",
     )
-    accept_content = ["json"]
     broker_connection_retry_on_startup = (True,)
     broker_connection_max_retries = (5,)
-    imports = ("tasks",)
+    imports = ("api.tasks",)
     CELERY_BROKER_URL = os.environ.get(
         "CELERY_RESULT_BACKEND",
         "redis://localhost:6389",
     )
+    accept_content = ["application/json", "application/x-pydantic"]
+    result_accept_content = ["application/json", "application/x-pydantic"]
 
 
 def get_config() -> Settings:
