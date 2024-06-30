@@ -31,7 +31,7 @@ services:
     restart: on-failure
     container_name: redis-ocr
     build:
-      context: docker/redis
+      context: infrastructure/docker/redis
     security_opt:
       - no-new-privileges:true
     ports:
@@ -42,7 +42,7 @@ services:
     privileged: true
     volumes:
       - ./data/redis:/data
-      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./infrastructure/docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
 
   rabbitmq:
     image: "bitnami/rabbitmq:3.12.14"
@@ -61,7 +61,7 @@ services:
     environment:
       - CERTBOT_EMAIL
     env_file:
-      - ./docker/nginx/nginx.env
+      - ./infrastructure/docker/nginx/nginx.env
     ports:
       - 80:80
       - 443:443
@@ -72,7 +72,7 @@ services:
     restart: on-failure
     container_name: postgresql-ocr
     build:
-      context: docker/postgres
+      context: infrastructure/docker/postgres
     env_file:
       - .env
     ports:
