@@ -129,13 +129,14 @@ dmypy.json
 .pyre/
 
 # Custom
-ocr-app/static/processed
-ocr-app/static/docs
-ocr-app/static/*.zip
-ocr-app/static/temp*
+*/static/processed/
+*/static/docs
+*/static/*.zip
+*/static/temp*
 data/
 certs/
 .vscode/*
+grafana/*
 
 # Local .terraform directories
 **/.terraform/*
