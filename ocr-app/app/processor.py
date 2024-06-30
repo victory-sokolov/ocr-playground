@@ -1,3 +1,4 @@
+import base64
 import os
 from typing import Union
 from uuid import uuid1
@@ -7,6 +8,7 @@ import numpy as np
 from loguru import logger
 from recognizers import Recognizer
 from transform import four_point_transform
+from utils.helpers import is_base64
 from utils.image_utils import grab_contours, resize
 
 
@@ -53,6 +55,7 @@ class Processor:
         return img
 
     def process_list_of_images(self, files: list[str]) -> list:
+        """Used when zip file is uploaded and several images need to be processed."""
         recognized_data = []
 
         for image in files:
@@ -65,9 +68,26 @@ class Processor:
         return recognized_data
 
     def process_image_bytes(self, file: bytes) -> dict:
+        logger.info("Converting bytes to image")
         nparr = np.fromstring(file, np.uint8)
         img_np = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        if not img_np:
+            raise ValueError("Image conversion failed")
         data = self.pre_process(img_np)
+        return data
+
+    def process_base64_image(self, file: str):
+        logger.info("Converting Base64 image to OpenCV image format")
+        bytes_data = base64.b64decode(file)
+
+        np_array = np.frombuffer(bytes_data, np.uint8)
+        # Decode the NumPy array as an image
+        image = cv2.imdecode(np_array, cv2.IMREAD_COLOR)
+
+        if image is None:
+            logger.error("Error: Could not decode image")
+
+        data = self.pre_process(image)
         return data
 
     def process(self, files: Union[list, str, bytes]) -> dict:
@@ -75,6 +95,8 @@ class Processor:
             self.process_list_of_images(files)
         elif isinstance(files, bytes):
             return self.process_image_bytes(files)
+        elif isinstance(files, str) and is_base64(files):
+            return self.process_base64_image(files)
         elif isinstance(files, str):
             image = self._load_image(files)
             return self.pre_process(image)

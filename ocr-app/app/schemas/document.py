@@ -1,9 +1,11 @@
-from models.base import Base
-from sqlalchemy.orm import Mapped
+from pydantic import BaseModel
+
+from .base import Base
 
 
 class DocumentSchema(Base):
-    raw_data: Mapped[str]
+    raw_data: str
 
-    class Config:
-        from_attributes = True
+
+class OcrRequest(BaseModel):
+    image_data: str

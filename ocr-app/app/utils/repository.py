@@ -33,6 +33,7 @@ class SQLAlchemyRepository(AbstractRepository):
                 stmt = insert(self.model).values(**data).returning(self.model.id)
                 res = await session.execute(stmt)
                 await session.commit()
+                session.refresh(res)
         return res.scalar_one()
 
     async def find_all(self):
@@ -48,7 +49,7 @@ class SQLAlchemyRepository(AbstractRepository):
             async with db_session as session:
                 stmt = select(self.model).filter_by(id=id)
                 res = await session.execute(stmt)
-                data = res.fetchone()
+                data = res.scalar_one()
                 if not data:
                     raise HTTPException(status_code=404, detail="Item not found")
-        return data[0].to_read_model()
+        return data

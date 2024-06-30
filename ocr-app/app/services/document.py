@@ -1,7 +1,6 @@
-from api.extract.schemas import OcrRequest
 from containers import RecognitionContainer
 from repositories.document import DocumentRepository
-from schemas.document import DocumentSchema
+from schemas.document import DocumentSchema, OcrRequest
 
 
 class DocumentService:
@@ -10,7 +9,7 @@ class DocumentService:
 
     async def create_document(self, data: OcrRequest) -> DocumentSchema:
         processor = RecognitionContainer.processor()
-        ocr_data = processor.process(data.image_data)
+        ocr_data = processor.process(data.get("image_data", ""))
         content = {"raw_data": ocr_data["text"]}
-        response = await self.repository.get_document_data(content)
+        response = await self.repository.create_document(content)
         return response

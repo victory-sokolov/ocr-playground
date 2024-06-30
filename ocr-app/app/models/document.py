@@ -1,10 +1,10 @@
 from models.base import Base
 from schemas.document import DocumentSchema
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped
 
 
 class Document(Base):
-    raw_data: Mapped[str] = mapped_column("raw_data", nullable=False, default="")
+    raw_data: Mapped[str]
 
     def to_read_model(self):
         return DocumentSchema(
