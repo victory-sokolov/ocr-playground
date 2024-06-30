@@ -47,7 +47,7 @@ Run with Kubernetes:
 ## Terraform
 
 ```bash
-cd terraform
+cd infrastructure/terraform
 terraform init
 terraform apply
 helm list -A # Verfiy installation
