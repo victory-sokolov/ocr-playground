@@ -136,7 +136,7 @@ dmypy.json
 data/
 certs/
 .vscode/*
-grafana/*
+**/grafana/*
 
 # Local .terraform directories
 **/.terraform/*
