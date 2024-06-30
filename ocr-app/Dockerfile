@@ -12,12 +12,13 @@ WORKDIR /ocr
 ENV DEBIAN_FRONTEND=noninteractive \
     LC_ALL=C \
     PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONIOENCODING=UTF-8 \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
     POETRY_VERSION=${POETRY_VERSION} \
     TZ=UTC
-
 
 RUN rm -rf /var/lib/apt/lists/*
 RUN echo "Acquire::http::Pipeline-Depth 0;" > /etc/apt/apt.conf.d/99custom && \
