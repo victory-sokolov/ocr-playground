@@ -18,6 +18,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
     POETRY_VERSION=${POETRY_VERSION} \
+    POETRY_NO_INTERACTION=1 \
+    POETRY_VIRTUALENVS_CREATE=false \
     TZ=UTC
 
 RUN rm -rf /var/lib/apt/lists/*
@@ -33,7 +35,13 @@ RUN apt-get clean \
     pkg-config \
     libtool \
     libicu-dev \
-    libcairo2-dev
+    libcairo2-dev \
+    liblept5 \
+    libtesseract-dev \
+    libleptonica-dev \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    tesseract-ocr-lav
 
 RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python && \
     cd /usr/local/bin && \
@@ -41,24 +49,15 @@ RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python
     poetry config virtualenvs.create false
 
 # Install packages
-ARG INSTALL_DEV=false
-COPY poetry.lock pyproject.toml ./
-RUN bash -c "if [$INSTALL_DEV == 'true']; then poetry install --no-root ; else poetry install --no-root --only main; fi"
+ARG INSTALL_DEV="false"
+COPY pyproject.toml ./
+RUN bash -c "if ["$INSTALL_DEV" == 'true']; then poetry install --no-root ; else poetry install --no-root --only main; fi"
 
 FROM base AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TESSDATA_PREFIX="/usr/share/tesseract-ocr/5.00/tessdata"
 
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get update && apt-get install -y --no-install-recommends --fix-missing \
-    liblept5 \
-    libtesseract-dev \
-    libleptonica-dev \
-    tesseract-ocr \
-    tesseract-ocr-eng \
-    tesseract-ocr-lav
 
 # Move traineddata files to $TESSDATA
 ARG CACHE_BUST=1
