@@ -1,12 +1,12 @@
 from dependency_injector import containers
 from dependency_injector.providers import Configuration, Container, Factory, Singleton
 from processor import Processor
-from recognizers import EasyOcr, Paddle, Tesseract
+from recognizers import EasyOcr, Tesseract
 
 
 class Recognizers(containers.DeclarativeContainer):
     tesseract = Singleton(Tesseract)
-    paddle = Singleton(Paddle)
+    # paddle = Singleton(Paddle)
     easyocr = Singleton(EasyOcr)
 
 
