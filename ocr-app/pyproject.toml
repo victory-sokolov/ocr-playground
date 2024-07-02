@@ -48,8 +48,9 @@ mypy = "^1.8.0"
 flake8 = "^7.0.0"
 watchdog = {extras = ["watchmedo"], version = "^4.0.1"}
 
-[tool.poetry.group.extras.dependencies]
-paddleocr = "^2.7.3"
+
+[tool.poetry.extras]
+paddle_ocr = ["paddleocr"]
 
 [tool.black]
 line-length = 88
