@@ -4566,6 +4566,8 @@ files = [
     {file = "wrapt-1.16.0.tar.gz", hash = "sha256:5f370f952971e7d17c7d1ead40e49f32345a7f7a5373571ef44d800d06b1899d"},
 ]
 
+[extras]
+paddle-ocr = []
 
 [metadata]
 lock-version = "2.0"
