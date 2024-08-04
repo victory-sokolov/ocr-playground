@@ -140,3 +140,5 @@ certs/
 
 # Local .terraform directories
 **/.terraform/*
+vendor/
+.DS_Store
