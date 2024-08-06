@@ -13,13 +13,13 @@ spec:
         app: ocrapp
     spec:
       containers:
-        - name: ocrapp
-          image: localhost:5000/ocrapp
+        - name: ocr
+          image: victorysokolov/ocr
           imagePullPolicy: Never
           resources:
             limits:
-              memory: "128Mi"
-              cpu: "500m"
+              memory: '128Mi'
+              cpu: '500m'
           ports:
             - containerPort: 8002
               protocol: TCP
