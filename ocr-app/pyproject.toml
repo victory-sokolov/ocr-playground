@@ -47,6 +47,7 @@ isort = "^5.13.2"
 mypy = "^1.8.0"
 flake8 = "^7.0.0"
 watchdog = {extras = ["watchmedo"], version = "^4.0.1"}
+py-spy = "^0.3.14"
 
 
 [tool.poetry.extras]
