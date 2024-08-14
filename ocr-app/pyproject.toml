@@ -70,10 +70,18 @@ exclude = '''
 '''
 
 [tool.mypy]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_any_generics = true
+ignore_missing_imports = true
 check_untyped_defs = true
-disallow_untyped_defs = false
-install_types = true
-exclude = ["venv", ".venv", "alembic"]
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+no_implicit_optional = true
+follow_imports = "skip"
+install_types = false
+exclude = ["venv", ".venv", "alembic", "app/tests"]
 
 
 [build-system]
