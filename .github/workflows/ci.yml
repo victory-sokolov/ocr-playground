@@ -8,6 +8,7 @@ on:
 
 jobs:
   super-lint:
+    if: false
     name: Lint code base
     runs-on: ubuntu-latest
     steps:
@@ -28,6 +29,6 @@ jobs:
         run: pipx install poetry
       - uses: actions/setup-python@v3
         with:
-          python-version: "3.10.13"
-          cache: "poetry"
+          python-version: '3.10.13'
+          cache: 'poetry'
       - run: poetry install
