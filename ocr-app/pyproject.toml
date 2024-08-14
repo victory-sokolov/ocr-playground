@@ -48,6 +48,7 @@ mypy = "^1.8.0"
 flake8 = "^7.0.0"
 watchdog = {extras = ["watchmedo"], version = "^4.0.1"}
 py-spy = "^0.3.14"
+opencv-stubs = {extras = ["opencv-headless"], version = "^0.0.10"}
 
 
 [tool.poetry.extras]

@@ -2324,6 +2324,29 @@ numpy = [
 ]
 
 [[package]]
+name = "opencv-stubs"
+version = "0.0.10"
+description = "Unofficial stubs for the opencv-python package."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "opencv_stubs-0.0.10-py3-none-any.whl", hash = "sha256:470f979b7403e1766857fd21922f292a9b84450da90d2e498d63c6b59148d87e"},
+    {file = "opencv_stubs-0.0.10.tar.gz", hash = "sha256:d739c5e7b0628838e1a9a7dc88f9eb1b2c0a9df14d5ae879f9615788a9de1436"},
+]
+
+[package.dependencies]
+numpy = ">=1.21"
+opencv-python-headless = {version = ">=4.7.0", optional = true, markers = "extra == \"opencv-headless\""}
+
+[package.extras]
+build = ["hatch"]
+dev = ["pip-tools", "pre-commit", "pyright", "ruff"]
+flake8 = ["flake8", "flake8-broken-line", "flake8-bugbear", "flake8-builtins", "flake8-commas", "flake8-comprehensions", "flake8-docstrings", "flake8-import-order", "flake8-noqa", "flake8-pyproject", "flake8-quotes", "pep8-naming"]
+opencv = ["opencv-python (>=4.7.0)"]
+opencv-contrib = ["opencv-contrib-python (>=4.7.0)"]
+opencv-headless = ["opencv-python-headless (>=4.7.0)"]
+
+[[package]]
 name = "orjson"
 version = "3.10.5"
 description = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
@@ -4589,4 +4612,4 @@ paddle-ocr = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10.14"
-content-hash = "4a92e3fea2458a680d38577a8eef879e05eb90c17d29f1cc9f7eaaaffda72495"
+content-hash = "a5d4d43bf886e9b0c45d51a4b9b2534c8f46cba666057458771b0c312836d813"
