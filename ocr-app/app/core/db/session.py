@@ -45,12 +45,12 @@ class RoutingSession(Session):
 
 
 class DatabaseSessionManager:
-    def __init__(self):
+    def __init__(self) -> None:
         self.engine: AsyncEngine | None = None
         self.session = None
         self.session_maker = None
 
-    def init_db(self):
+    def init_db(self) -> None:
         # Creating an asynchronous engine
         self.engine = create_async_engine(
             config.WRITER_DB_URL,
@@ -72,7 +72,7 @@ class DatabaseSessionManager:
             scopefunc=current_task,
         )
 
-    async def close(self):
+    async def close(self) -> None:
         # Closing the database session...
         if self.engine is None:
             raise Exception("DatabaseSessionManager is not initialized")

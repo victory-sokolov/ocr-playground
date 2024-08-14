@@ -4,7 +4,7 @@ from schemas.document import DocumentSchema, OcrRequest
 
 
 class DocumentService:
-    def __init__(self, document_repo: DocumentRepository):
+    def __init__(self, document_repo: DocumentRepository) -> None:
         self.repository = document_repo()
 
     async def create_document(self, data: OcrRequest) -> DocumentSchema:

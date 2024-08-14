@@ -20,7 +20,7 @@ instrumentator = Instrumentator().instrument(app)
 
 
 @app.on_event("startup")
-async def _startup():
+async def _startup() -> None:
     instrumentator.expose(app)
 
 

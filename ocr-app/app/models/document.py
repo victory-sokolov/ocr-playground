@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped
 class Document(Base):
     raw_data: Mapped[str]
 
-    def to_read_model(self):
+    def to_read_model(self) -> DocumentSchema:
         return DocumentSchema(
             id=self.id,
             created_at=self.created_at,

@@ -1,9 +1,11 @@
 import base64
 import time
 from functools import wraps
+from typing import Callable
 
 
 def is_base64(sb: str) -> bool:
+    sb_bytes = None
     try:
         if isinstance(sb, str):
             # If there's any unicode here, an exception will be thrown and the function will return false
@@ -12,12 +14,12 @@ def is_base64(sb: str) -> bool:
             sb_bytes = sb
         else:
             raise ValueError("Argument must be string or bytes")
-        return base64.b64encode(base64.b64decode(sb_bytes)) == sb_bytes
     except Exception:
         return False
+    return base64.b64encode(base64.b64decode(sb_bytes)) == sb_bytes
 
 
-def clean(txt_data):
+def clean(txt_data: list[dict[str, str]]):
     for index, txt in enumerate(txt_data):
         data = " ".join(txt["text"].split())
         txt_data[index]["text"] = data
@@ -25,7 +27,7 @@ def clean(txt_data):
     return txt_data
 
 
-def timeit(func):
+def timeit(func: Callable):
     @wraps(func)
     def timeit_wrapper(*args, **kwargs):
         start_time = time.perf_counter()

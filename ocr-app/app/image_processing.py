@@ -9,12 +9,12 @@ from wand.image import Image as WandImage
 
 
 class ImageProcessing:
-    def __init__(self, image):
+    def __init__(self, image: str) -> None:
         self.image_path = image
         self.image_name = image
         self.image = cv2.imread(f"static/{image}")
 
-    def change_image_dpi(self, image):
+    def change_image_dpi(self, image: str) -> None:
         params = ["mogrify", "-set", "density", "300", image]
         Popen(params, stdout=PIPE, stderr=STDOUT, text=True)
 
@@ -32,7 +32,7 @@ class ImageProcessing:
 
         return self.image
 
-    def gray_scale(self, image):
+    def gray_scale(self, image: str):
         return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     def noise_removal(self, image):
@@ -41,7 +41,7 @@ class ImageProcessing:
     def thresh(self, image):
         return cv2.threshold(image, 127, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
-    def adaptive_thresh(self, image):
+    def adaptive_thresh(self, image: str):
         return cv2.adaptiveThreshold(
             image,
             255,
@@ -51,7 +51,7 @@ class ImageProcessing:
             12,
         )
 
-    def save_image(self, image) -> None:
+    def save_image(self, image: str) -> None:
         cv2.imwrite(f"{os.getcwd()}/static/output.png", image)
 
     def deskew(self, image):
@@ -73,7 +73,7 @@ class ImageProcessing:
         )
         return rotated
 
-    def dilate(self, image):
+    def dilate(self, image: str):
         # kernel = np.ones((5, 5), np.uint8)
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
         return cv2.dilate(image, kernel, iterations=1)
@@ -83,7 +83,7 @@ class ImageProcessing:
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
         return cv2.erode(image, kernel, iterations=1)
 
-    def cut_image(self, image):
+    def cut_image(self, image: str):
         """Cut edges of receipt image"""
         image_resized = cv2.resize(image, (800, 800))
         blurred = cv2.GaussianBlur(image_resized, (5, 5), 0)

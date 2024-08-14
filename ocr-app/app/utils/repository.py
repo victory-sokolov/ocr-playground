@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import NoReturn
 from uuid import UUID
 
 from core.db.session import get_db
@@ -9,15 +10,15 @@ from sqlalchemy import insert, select
 
 class AbstractRepository(ABC):
     @abstractmethod
-    async def add_one(self, data: dict):
+    async def add_one(self, data: dict) -> NoReturn:
         raise NotImplementedError
 
     @abstractmethod
-    async def find_all(self):
+    async def find_all(self) -> NoReturn:
         raise NotImplementedError
 
     @abstractmethod
-    async def find_one(self, id: UUID):
+    async def find_one(self, id: UUID) -> NoReturn:
         raise NotImplementedError
 
 
