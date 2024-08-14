@@ -9,6 +9,9 @@ install: # Install dependencies
 test: # Run tests
 	poetry run python -m unittest discover app/tests
 
+mypy:
+	poetry run mypy --config-file pyproject.toml app --cache-fine-grained
+
 worker: # Run Celery worker
 	poetry run celery -A worker.app worker --loglevel=info
 
