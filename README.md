@@ -26,7 +26,7 @@ mkcert localhost 127.0.0.1 ::1
 
 ## Run inside Docker
 
-Build Dockerfile `docker build -t ocr-app .`
+Build Dockerfile `docker build -t ocr . --rm`
 
 Run app inside Docker
 
@@ -39,10 +39,8 @@ Run with Kubernetes:
 1. Start minikube: `minikube start`
 2. Configure your shell to use the Docker daemon inside your Minikube virtual machine `minikube docker-env`
 3. Run `eval $(minikube -p minikube docker-env)`
-4. Build Docker image: `docker build ./ocr-app -t localhost:5000/ocrapp --rm`
-5. Start local Docker registry: `docker run -d -p 5000:5000 --restart=always --name registry registry:2`
-6. Push image to local registry: `docker push localhost:5000/ocrapp`
-7. Apply the Kubernetes deployment config: `kubectl apply -f deployment.yml`
+4. Pull docker image: `docker pull victorysokolov/ocr`
+5. Apply the Kubernetes deployment config: `kubectl apply -f deployment.yml`
 
 ## Terraform
 
