@@ -46,19 +46,6 @@ services:
       - ./data/redis:/data
       - ./infrastructure/docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
 
-  rabbitmq:
-    image: "bitnami/rabbitmq:3.12.14"
-    container_name: rabbitmq-ocr
-    networks:
-      - ocr-network
-    ports:
-      - "4369:4369"
-      - "5672:5672"
-      - "25672:25672"
-      - "15672:15672"
-    volumes:
-      - "rabbitmq_data:/bitnami"
-
   nginx:
     image: jonasal/nginx-certbot:latest
     restart: unless-stopped
@@ -94,63 +81,9 @@ services:
       timeout: 5s
       retries: 3
 
-  flower:
-    image: mher/flower
-    container_name: flower
-    networks:
-      - ocr-network
-    environment:
-      - FLOWER_BASIC_AUTH=user:test
-    ports:
-      - 5555:5555
-    depends_on:
-      - rabbitmq
-      - redis
-
-  prometheus:
-    image: prom/prometheus:latest
-    restart: unless-stopped
-    container_name: prometheus
-    ports:
-      - 9090:9090
-    networks:
-      - ocr-network
-    volumes:
-      - ./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/infrastructure/prometheus
-
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    restart: unless-stopped
-    networks:
-      - ocr-network
-    depends_on:
-      - prometheus
-    ports:
-      - 3010:3000
-    environment:
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
-    volumes:
-      - ./data/grafana/provisioning:/etc/grafana/provisioning
-      - ./data/grafana:/var/lib/grafana
-
-  dozzle:
-    container_name: dozzle-ui
-    image: amir20/dozzle:latest
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 8888:8080
-
 volumes:
   pg_data:
   nginx_secrets:
-  grafana_data:
-  prometheus_data:
-  rabbitmq_data:
-
 
 networks:
   ocr-network:
