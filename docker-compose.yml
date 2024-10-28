@@ -1,7 +1,8 @@
+name: ocr
+
 services:
 
   appocr:
-    container_name: ocrapp
     restart: unless-stopped
     tty: true
     build:
@@ -11,7 +12,7 @@ services:
     env_file:
       - .env
     ports:
-      - "8082:8082"
+      - 8082:8082
     networks:
       - ocr-network
     healthcheck:
@@ -29,7 +30,6 @@ services:
 
   redis:
     restart: on-failure
-    container_name: redis-ocr
     build:
       context: infrastructure/docker/redis
     security_opt:
@@ -49,7 +49,6 @@ services:
   nginx:
     image: jonasal/nginx-certbot:latest
     restart: unless-stopped
-    container_name: nginx-ocr
     environment:
       - CERTBOT_EMAIL
     env_file:
@@ -64,7 +63,6 @@ services:
 
   postgres-db:
     restart: on-failure
-    container_name: postgresql-ocr
     build:
       context: infrastructure/docker/postgres
     env_file:
