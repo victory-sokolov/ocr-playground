@@ -2,7 +2,7 @@ ARG PYTHON_VERSION="3.10.14"
 
 # Set build argument to use .python-version file if it exists, or default version
 # ARG PYTHON_VERSION=${PYTHON_VERSION:-$(cat .python-version)}
-ARG POETRY_VERSION="1.8.3"
+ARG POETRY_VERSION="1.8.4"
 
 # Use specified Python version or default version
 FROM python:${PYTHON_VERSION}-bookworm AS base
