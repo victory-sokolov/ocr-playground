@@ -1,5 +1,2 @@
-[installer]
-no-binary = ["tesserocr"]
-
 [virtualenvs]
 in-project = true
