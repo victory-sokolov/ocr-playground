@@ -22,7 +22,7 @@ flower: # Web UI for Celery (runs on port :5555)
 	poetry run celery -A worker.app flower
 
 dev: # Run dev server
-	poetry run python main.py
+	poetry run python server.py
 
 prod: # Run prod server
 	poetry run gunicorn app:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:80
