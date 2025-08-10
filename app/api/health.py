@@ -5,5 +5,5 @@ router = APIRouter()
 
 
 @router.get("/health", include_in_schema=False)
-def health(_request: Request):
+def health(_request: Request) -> JSONResponse:
     return JSONResponse(content={"status": "ok"})

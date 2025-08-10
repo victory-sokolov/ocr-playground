@@ -1,25 +1,25 @@
 import base64
 import time
 from functools import wraps
-from typing import Callable
+from typing import Callable, ParamSpec, TypeVar
 
 
-def is_base64(sb: str) -> bool:
-    sb_bytes = None
+def is_base64(sb: str | bytes) -> bool:
+    """Return True if the input is a valid base64-encoded byte sequence.
+
+    Accepts either str (ASCII) or bytes input. Returns False on any decode error.
+    """
     try:
         if isinstance(sb, str):
-            # If there's any unicode here, an exception will be thrown and the function will return false
-            sb_bytes = bytes(sb, "ascii")
+            sb_bytes = sb.encode("ascii")
         elif isinstance(sb, bytes):
             sb_bytes = sb
-        else:
-            raise ValueError("Argument must be string or bytes")
+        return base64.b64encode(base64.b64decode(sb_bytes)) == sb_bytes
     except Exception:
         return False
-    return base64.b64encode(base64.b64decode(sb_bytes)) == sb_bytes
 
 
-def clean(txt_data: list[dict[str, str]]):
+def clean(txt_data: list[dict[str, str]]) -> list[dict[str, str]]:
     for index, txt in enumerate(txt_data):
         data = " ".join(txt["text"].split())
         txt_data[index]["text"] = data
@@ -27,9 +27,13 @@ def clean(txt_data: list[dict[str, str]]):
     return txt_data
 
 
-def timeit(func: Callable):
+P = ParamSpec("P")
+T = TypeVar("T")
+
+
+def timeit(func: Callable[P, T]) -> Callable[P, T]:
     @wraps(func)
-    def timeit_wrapper(*args, **kwargs):
+    def timeit_wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
         start_time = time.perf_counter()
         result = func(*args, **kwargs)
         end_time = time.perf_counter()
