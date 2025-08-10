@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
 
 current_dir = os.getcwd()
-dotenv_path = Path(current_dir).parent.parent
+dotenv_path = Path(current_dir)
+
 load_dotenv(f"{dotenv_path}/.env.local")
 
 

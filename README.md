@@ -11,7 +11,7 @@ Image preprocessing is being done using OpenCV
 ## Start dev
 
 ```shell
-cd ocr-app/app
+cd app
 make dev
 ```
 
@@ -20,7 +20,7 @@ make dev
 ```bash
 brew install mkcert
 
-mkdir ocr-app/app/certs && cd ocr-app/app/certs
+mkdir app/certs && cd app/certs
 mkcert localhost 127.0.0.1 ::1
 ```
 
@@ -31,7 +31,7 @@ Build Dockerfile `docker build -t ocr . --rm`
 Run app inside Docker
 
 ```bash
-docker run -p 8000:8000 -it --rm ocr-app
+docker run -p 8000:8000 -it --rm ocr
 ```
 
 Run with Kubernetes:

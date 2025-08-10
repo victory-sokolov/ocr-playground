@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from api import router as extract_views
 from containers import RecognitionContainer
 from core.config import config
@@ -9,12 +11,14 @@ from loguru import logger
 from prometheus_fastapi_instrumentator import Instrumentator
 from utils.file import is_archive_file, save_file, unarchive_files
 
+BASE_DIR = Path(__file__).resolve().parent
+
 app = FastAPI(title=config.APP_NAME, debug=config.DEBUG)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
 app.include_router(router=extract_views, prefix="/api/v1")
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 instrumentator = Instrumentator().instrument(app)
 
