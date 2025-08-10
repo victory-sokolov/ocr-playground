@@ -18,7 +18,7 @@ class ImageProcessing:
         params = ["mogrify", "-set", "density", "300", image]
         Popen(params, stdout=PIPE, stderr=STDOUT, text=True)
 
-    def rotate(self, image):
+    def rotate(self, image: str) -> str:
         angle = 90
         (height, width) = image.shape[:2]
         if height < width:
